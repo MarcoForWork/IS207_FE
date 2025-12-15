@@ -67,6 +67,7 @@ export default {
   margin-bottom: 30px;
 
   background: linear-gradient(90deg, #ffc800, #ff7f00, #e73d4a, #0090ff, #00c0b9);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

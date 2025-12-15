@@ -166,8 +166,13 @@ export default {
   },
   methods: {
     applySearchQuery(q) {
-      // Navigate without stacking history for each keystroke
-      this.$router.replace({ name: 'products', query: q ? { search: q } : {} })
+      const query = q ? { search: q } : {}
+      // If already on products, replace to avoid history spam; otherwise push to navigate there
+      if (this.$route.name === 'products') {
+        this.$router.replace({ name: 'products', query })
+      } else {
+        this.$router.push({ name: 'products', query })
+      }
     },
     toggleSearch() {
       this.showSearch = !this.showSearch
@@ -180,17 +185,16 @@ export default {
       }
       this.applySearchQuery(q)
     },
-    handleLogout() {
-      localStorage.removeItem('user')
-      this.$router.push('/login')
-    },
     updateCartCount() {
-      this.cartCount = this.$store?.state?.cart?.length || 0
+      // TODO: Implement cart count from store/API
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+      this.cartCount = cart.length
     },
   },
   watch: {
-    // Reactive search when typing (light debounce)
+    // Reactive search only when already on products page; otherwise require Enter
     searchQuery(newVal) {
+      if (this.$route.name !== 'products') return // Only instant search on products page
       const q = newVal.trim()
       if (this.searchTimer) clearTimeout(this.searchTimer)
       this.searchTimer = setTimeout(() => {
@@ -203,7 +207,6 @@ export default {
     this.updateCartCount()
   },
   beforeUnmount() {
-    document.removeEventListener('click', this.closeMenuOnClickOutside)
     if (this.searchTimer) clearTimeout(this.searchTimer)
   },
 }

@@ -66,26 +66,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.12rem 1rem; /* slightly taller header */
+  padding: 0.12rem 1rem;
   background-color: #32302f;
   border-bottom: 1px solid #504945;
-  height: 32px; /* slightly taller header */
-}
-
-.header-links {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.header-link {
-  text-decoration: none;
-  color: #ebdbb2;
-  font-size: 0.875rem;
-  transition: color 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  height: 32px;
 }
 
 .header-left {
@@ -125,31 +109,6 @@ export default {
   stroke: #8ec07c;
 }
 
-.account-text {
-  color: #ebdbb2;
-  font-size: 0.875rem;
-}
-
-.account-icon {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.account-icon svg {
-  width: 100%;
-  height: 100%;
-  stroke: #ebdbb2;
-  transition: stroke 0.2s ease;
-}
-
-.account-icon:hover svg {
-  stroke: #8ec07c;
-}
-
 @media (max-width: 768px) {
   .header-container {
     padding: 0.4rem 0.75rem;
@@ -161,7 +120,7 @@ export default {
   }
 
   .account-label {
-    display: none; /* hide label on small screens, show only icon */
+    display: none;
   }
 }
 </style>

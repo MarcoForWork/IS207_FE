@@ -702,6 +702,7 @@ onMounted(() => {
   font-weight: 600;
   color: #3c3836;
   background-color: #fef8ed;
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 

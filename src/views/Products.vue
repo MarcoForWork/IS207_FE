@@ -180,12 +180,7 @@
           <section class="products-grid">
             <div v-if="loading" class="loading-state">Loading products...</div>
             <div v-else class="grid-list">
-              <ProductCard
-                v-for="p in displayedProducts"
-                :key="p.id"
-                :product="p"
-                @add-to-cart="addToCart"
-              />
+              <ProductCard v-for="p in displayedProducts" :key="p.id" :product="p" />
             </div>
           </section>
         </div>
@@ -565,14 +560,6 @@ onUnmounted(() => {
 })
 
 // products is used directly now; remove client-side search
-
-function addToCart(product) {
-  const stored = JSON.parse(localStorage.getItem('cart') || '[]')
-  stored.push({ ...product })
-  localStorage.setItem('cart', JSON.stringify(stored))
-  // simple feedback
-  window.alert(`${product.name} đã được thêm vào giỏ hàng`)
-}
 </script>
 
 <style scoped>
@@ -640,9 +627,10 @@ function addToCart(product) {
 
 .grid-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
   justify-items: stretch;
+  align-items: start;
 }
 
 /* Catalog layout styles */

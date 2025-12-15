@@ -19,13 +19,9 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps({
   product: { type: Object, required: true },
 })
-
-defineEmits(['add-to-cart'])
 
 function formatPrice(p) {
   if (p == null) return ''
@@ -70,7 +66,7 @@ function formatPrice(p) {
 .thumb {
   width: 100%;
   height: 0;
-  padding-bottom: 100%;
+  padding-bottom: 88%;
   position: relative;
   background: #f5f5f5;
   overflow: hidden;
@@ -101,33 +97,33 @@ function formatPrice(p) {
   background: #f5f5f5;
 }
 .meta {
-  padding: 0;
+  padding: 0 4px 4px;
 }
 .title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #111;
   font-weight: 500;
   margin: 0 0 2px 0;
-  line-height: 1.75;
+  line-height: 1.5;
 }
 .category {
   color: #757575;
-  font-size: 1rem;
-  margin: 0 0 0 0;
-  line-height: 1.75;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
 }
 .colors {
   color: #757575;
-  font-size: 1rem;
-  margin: 0 0 16px 0;
-  line-height: 1.75;
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  line-height: 1.5;
 }
 .price {
   color: #111;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin: 0;
-  line-height: 1.75;
+  line-height: 1.5;
 }
 
 @media (max-width: 768px) {
