@@ -1,29 +1,34 @@
 <template>
-  <RouterView />
+  <div>
+    <Header />
+    <Navbar />
+    <main>
+      <HeroBanner />
+
+      <ProductSection title="Sản Phẩm Đang Giảm Giá" :products="saleProducts" />
+      <ProductSection title="Bộ Sưu Tập Mới" :products="newArrivals" />
+    </main>
+    <Footer />
+  </div>
 </template>
 
 <script>
-import { RouterView } from 'vue-router'
+import Header from '@/components/global/Header.vue'
+import HeroBanner from '@/components/HeroBanner.vue'
+import Footer from '@/components/global/Footer.vue'
+import Navbar from '@/components/global/Navbar.vue'
 export default {
-  name: 'App',
+  name: 'Home',
+  components: {
+    Header,
+    Footer,
+    HeroBanner,
+    Navbar,
+  },
 }
 </script>
 
 <style>
-/* Reset default page spacing and use border-box sizing to avoid unexpected gaps */
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#app {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 /* Gruvbox Light Color Palette (Soft variant) */
 :root {
   /* Backgrounds */
@@ -40,7 +45,6 @@ body,
 /* Apply Gruvbox Light background and text color to the entire body/container */
 body {
   background-color: var(--bg-light);
-  margin: 0;
   color: var(--fg-light);
   font-family: sans-serif;
 }
@@ -51,8 +55,7 @@ h1 {
   color: var(--fg-light);
 }
 
-.register,
-.login {
+.register {
   padding: 20px;
   background-color: var(--dark-bg); /* Slightly darker, warmer background for the form area */
   width: fit-content;
@@ -61,8 +64,7 @@ h1 {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.register input,
-.login input {
+.register input {
   width: 300px;
   height: 40px;
   padding-left: 20px;
@@ -79,14 +81,12 @@ h1 {
 }
 
 /* Change input placeholder color */
-.register input::placeholder,
-.login input::placeholder {
+.register input::placeholder {
   color: var(--gray);
   opacity: 1;
 }
 
-.register button,
-.login button {
+.register button {
   width: 320px;
   height: 40px;
   display: block;
@@ -105,8 +105,7 @@ h1 {
 }
 
 /* Hover effect */
-.register button:hover,
-.login button:hover {
+.register button:hover {
   background-color: var(--yellow); /* Hover with Gruvbox yellow */
   color: var(--fg-light); /* Dark text on hover for contrast */
 }
