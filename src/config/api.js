@@ -127,6 +127,64 @@ export const API_ENDPOINTS = {
     FAQ: '/faq',
     SUBMIT_TICKET: '/support/tickets',
   },
+
+  // Admin Dashboard APIs
+  ADMIN: {
+    // Categories Management
+    CATEGORIES: {
+      CREATE: '/categories',
+      UPDATE: (categoryId) => `/categories/${categoryId}`,
+      UPDATE_STATUS: (categoryId) => `/categories/${categoryId}/status`,
+    },
+
+    // Collections Management
+    COLLECTIONS: {
+      CREATE: '/collections',
+      UPDATE: (collectionId) => `/collections/${collectionId}`,
+      UPDATE_STATUS: (collectionId) => `/collections/${collectionId}/status`,
+    },
+
+    // Products Management
+    PRODUCTS: {
+      CREATE: '/products',
+      UPDATE: (productId) => `/products/${productId}`,
+      UPDATE_STATUS: (productId) => `/products/${productId}/status`,
+    },
+
+    // Product Images Management
+    PRODUCT_IMAGES: {
+      CREATE: '/product-images',
+    },
+
+    // Product Discounts Management
+    PRODUCT_DISCOUNTS: {
+      CREATE: '/product-discounts',
+    },
+
+    // Product Colors Management
+    PRODUCT_COLORS: {
+      CREATE: '/product-colors',
+    },
+
+    // Product FAQs Management
+    PRODUCT_FAQS: {
+      CREATE: '/product-faqs',
+      UPDATE: (faqId) => `/product-faqs/${faqId}`,
+      DELETE: (faqId) => `/product-faqs/${faqId}`,
+    },
+
+    // Product Highlights Management
+    PRODUCT_HIGHLIGHTS: {
+      CREATE: '/product-highlights',
+      UPDATE: (highlightId) => `/product-highlights/${highlightId}`,
+      DELETE: (highlightId) => `/product-highlights/${highlightId}`,
+    },
+
+    // Orders Management
+    ORDERS: {
+      UPDATE_STATUS: (orderId) => `/orders/${orderId}/status`,
+    },
+  },
 }
 
 // HTTP Methods
