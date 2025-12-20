@@ -71,10 +71,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
 import Footer from '@/components/global/Footer.vue'
+import { buildUrl, API_ENDPOINTS, getHeaders } from '@/config/api'
 
 const router = useRouter()
 const name = ref('')
@@ -104,12 +104,16 @@ async function handleSubmit() {
   loading.value = true
   try {
     // TODO: Replace with real API call
-    // const response = await axios.post('https://your-api.com/api/signup', {
-    //   name: name.value,
-    //   email: email.value,
-    //   password: password.value,
+    // const response = await fetch(buildUrl(API_ENDPOINTS.AUTH.SIGNUP), {
+    //   method: 'POST',
+    //   headers: getHeaders(),
+    //   body: JSON.stringify({
+    //     name: name.value,
+    //     email: email.value,
+    //     password: password.value,
+    //   }),
     // })
-    // const data = response.data
+    // const data = await response.json()
     // localStorage.setItem('user-info', JSON.stringify(data.user))
     // router.push('/')
 

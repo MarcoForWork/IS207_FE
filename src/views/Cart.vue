@@ -171,6 +171,7 @@ import { useRouter } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
 import Footer from '@/components/global/Footer.vue'
+import { buildUrl, API_ENDPOINTS, getAuthHeaders } from '@/config/api'
 
 const router = useRouter()
 
@@ -185,11 +186,8 @@ async function loadCart() {
   // TODO: Replace with actual API endpoint
   // Example API call:
   // try {
-  //   const response = await fetch('https://your-api.com/api/cart', {
-  //     headers: {
-  //       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //       'Content-Type': 'application/json'
-  //     }
+  //   const response = await fetch(buildUrl(API_ENDPOINTS.CART.GET), {
+  //     headers: getAuthHeaders(),
   //   })
   //   const data = await response.json()
   //   cartItems.value = data.items.map(item => ({
@@ -269,7 +267,11 @@ async function increaseQuantity(itemId) {
     item.quantity++
     await saveCart()
     // TODO: Call API to update quantity
-    // await updateCartItemQuantity(itemId, item.quantity)
+    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
+    //   method: 'PATCH',
+    //   headers: getAuthHeaders(),
+    //   body: JSON.stringify({ quantity: item.quantity })
+    // })
   }
 }
 
@@ -279,7 +281,11 @@ async function decreaseQuantity(itemId) {
     item.quantity--
     await saveCart()
     // TODO: Call API to update quantity
-    // await updateCartItemQuantity(itemId, item.quantity)
+    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
+    //   method: 'PATCH',
+    //   headers: getAuthHeaders(),
+    //   body: JSON.stringify({ quantity: item.quantity })
+    // })
   }
 }
 
@@ -295,19 +301,20 @@ async function updateQuantity(itemId, newQuantity) {
     }
     await saveCart()
     // TODO: Call API to update quantity
-    // await updateCartItemQuantity(itemId, item.quantity)
+    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
+    //   method: 'PATCH',
+    //   headers: getAuthHeaders(),
+    //   body: JSON.stringify({ quantity: item.quantity })
+    // })
   }
 }
 
 async function removeItem(itemId) {
   // TODO: Call API to remove item from cart
   // try {
-  //   await fetch(`https://your-api.com/api/cart/${itemId}`, {
+  //   await fetch(buildUrl(API_ENDPOINTS.CART.REMOVE_ITEM(itemId)), {
   //     method: 'DELETE',
-  //     headers: {
-  //       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //       'Content-Type': 'application/json'
-  //     }
+  //     headers: getAuthHeaders(),
   //   })
   // } catch (error) {
   //   console.error('Error removing item:', error)
@@ -326,12 +333,9 @@ async function applyDiscount() {
 
   // TODO: Replace with actual API endpoint for discount validation
   // try {
-  //   const response = await fetch('https://your-api.com/api/discounts/validate', {
+  //   const response = await fetch(buildUrl(API_ENDPOINTS.COUPONS.VALIDATE), {
   //     method: 'POST',
-  //     headers: {
-  //       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //       'Content-Type': 'application/json'
-  //     },
+  //     headers: getAuthHeaders(),
   //     body: JSON.stringify({
   //       code: discountCode.value,
   //       subtotal: subtotal.value
@@ -363,12 +367,9 @@ async function applyDiscount() {
 async function saveCart() {
   // TODO: Sync cart with backend API
   // try {
-  //   await fetch('https://your-api.com/api/cart/sync', {
+  //   await fetch(buildUrl(API_ENDPOINTS.CART.GET), {
   //     method: 'PUT',
-  //     headers: {
-  //       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  //       'Content-Type': 'application/json'
-  //     },
+  //     headers: getAuthHeaders(),
   //     body: JSON.stringify({ items: cartItems.value })
   //   })
   // } catch (error) {
@@ -382,12 +383,9 @@ async function saveCart() {
 // TODO: Helper function for updating cart item quantity via API
 // async function updateCartItemQuantity(itemId, quantity) {
 //   try {
-//     await fetch(`https://your-api.com/api/cart/${itemId}`, {
+//     await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
 //       method: 'PATCH',
-//       headers: {
-//         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-//         'Content-Type': 'application/json'
-//       },
+//       headers: getAuthHeaders(),
 //       body: JSON.stringify({ quantity })
 //     })
 //   } catch (error) {

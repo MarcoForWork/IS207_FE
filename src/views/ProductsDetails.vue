@@ -179,6 +179,197 @@
               </ul>
             </transition>
           </div>
+
+          <!-- Reviews Section -->
+          <div class="reviews-section">
+            <div class="reviews-header">
+              <h2>Đánh giá sản phẩm</h2>
+              <div class="rating-summary">
+                <div class="average-rating">
+                  <span class="rating-number">{{ averageRating }}</span>
+                  <div class="stars">
+                    <span
+                      v-for="star in 5"
+                      :key="star"
+                      class="star"
+                      :class="{ filled: star <= Math.round(averageRating) }"
+                      >★</span
+                    >
+                  </div>
+                  <span class="review-count">({{ reviews.length }} đánh giá)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Write Review Form -->
+            <div class="write-review" v-if="!showReviewForm">
+              <button @click="showReviewForm = true" class="write-review-btn">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Viết đánh giá
+              </button>
+            </div>
+
+            <!-- Review Form -->
+            <transition name="slide">
+              <div v-if="showReviewForm" class="review-form">
+                <h3>Viết đánh giá của bạn</h3>
+                <div class="form-group">
+                  <label>Đánh giá của bạn *</label>
+                  <div class="star-rating">
+                    <span
+                      v-for="star in 5"
+                      :key="star"
+                      class="star-input"
+                      :class="{ filled: star <= newReview.rating, hover: star <= hoverRating }"
+                      @click="newReview.rating = star"
+                      @mouseenter="hoverRating = star"
+                      @mouseleave="hoverRating = 0"
+                      >★</span
+                    >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="review-name">Tên của bạn *</label>
+                  <input
+                    type="text"
+                    id="review-name"
+                    v-model="newReview.name"
+                    placeholder="Nhập tên của bạn"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="review-comment">Nhận xét *</label>
+                  <textarea
+                    id="review-comment"
+                    v-model="newReview.comment"
+                    rows="4"
+                    placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                    required
+                  ></textarea>
+                </div>
+                <div class="form-actions">
+                  <button
+                    @click="submitReview"
+                    class="submit-review-btn"
+                    :disabled="!canSubmitReview"
+                  >
+                    Gửi đánh giá
+                  </button>
+                  <button @click="cancelReview" class="cancel-btn">Hủy</button>
+                </div>
+              </div>
+            </transition>
+
+            <!-- Reviews List -->
+            <div class="reviews-list">
+              <div class="reviews-filter">
+                <button
+                  @click="filterRating = null"
+                  :class="{ active: filterRating === null }"
+                  class="filter-btn"
+                >
+                  Tất cả ({{ reviews.length }})
+                </button>
+                <button
+                  v-for="rating in [5, 4, 3, 2, 1]"
+                  :key="rating"
+                  @click="filterRating = rating"
+                  :class="{ active: filterRating === rating }"
+                  class="filter-btn"
+                >
+                  {{ rating }} ★ ({{ reviewsByRating(rating) }})
+                </button>
+              </div>
+
+              <div class="review-items">
+                <div v-for="review in filteredReviews" :key="review.id" class="review-item">
+                  <div class="review-header">
+                    <div class="reviewer-info">
+                      <div class="reviewer-avatar">{{ review.name.charAt(0).toUpperCase() }}</div>
+                      <div>
+                        <h4 class="reviewer-name">{{ review.name }}</h4>
+                        <div class="review-stars">
+                          <span
+                            v-for="star in 5"
+                            :key="star"
+                            class="star"
+                            :class="{ filled: star <= review.rating }"
+                            >★</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <span class="review-date">{{ review.date }}</span>
+                  </div>
+                  <p class="review-comment">{{ review.comment }}</p>
+                  <div class="review-actions">
+                    <button class="helpful-btn" @click="markHelpful(review.id)">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
+                        ></path>
+                      </svg>
+                      Hữu ích ({{ review.helpful || 0 }})
+                    </button>
+                    <button
+                      v-if="isMyReview(review)"
+                      class="delete-btn"
+                      @click="deleteReview(review.id)"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path
+                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        ></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+
+                <div v-if="filteredReviews.length === 0" class="no-reviews">
+                  <svg
+                    width="64"
+                    height="64"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <p>Chưa có đánh giá nào{{ filterRating ? ` ${filterRating} sao` : '' }}.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       <section v-else class="not-found">
@@ -193,12 +384,14 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
+import { buildUrl, API_ENDPOINTS, getAuthHeaders } from '@/config/api'
 
 const route = useRoute()
 const productId = route.params.id
 
 const product = ref(null)
 const loading = ref(false)
+const currentUser = ref(null)
 const selectedColor = ref(null)
 const selectedSize = ref(null)
 const selectedImage = ref('')
@@ -211,6 +404,65 @@ const openSections = ref({
   shipping: true,
   faqs: true,
 })
+
+// Review-related state
+const reviews = ref([
+  {
+    id: 1,
+    user_id: 1, // This would match the logged-in user for testing
+    name: 'Minh Anh',
+    rating: 5,
+    comment:
+      'Sản phẩm chất lượng tuyệt vời! Vải mềm mại, thoáng mát. Đóng gói cẩn thận, giao hàng nhanh.',
+    date: '15/12/2025',
+    helpful: 12,
+  },
+  {
+    id: 2,
+    user_id: 2,
+    name: 'Thu Hà',
+    rating: 4,
+    comment: 'Áo đẹp, form chuẩn. Mình mặc size M vừa vặn. Màu sắc giống hình. Giá hợp lý.',
+    date: '12/12/2025',
+    helpful: 8,
+  },
+  {
+    id: 3,
+    user_id: 3,
+    name: 'Quang Dũng',
+    rating: 5,
+    comment:
+      'Rất hài lòng với sản phẩm này. Chất liệu cotton thoáng, không bị xù lông sau vài lần giặt.',
+    date: '10/12/2025',
+    helpful: 5,
+  },
+  {
+    id: 4,
+    user_id: 4,
+    name: 'Lan Phương',
+    rating: 3,
+    comment: 'Sản phẩm tạm ổn, nhưng màu sắc không được sống động như mình mong đợi.',
+    date: '08/12/2025',
+    helpful: 2,
+  },
+  {
+    id: 5,
+    user_id: 5,
+    name: 'Hoàng Nam',
+    rating: 5,
+    comment: 'Mua lần 2 rồi, chất lượng ổn định. Giá cả hợp lý. Sẽ tiếp tục ủng hộ shop!',
+    date: '05/12/2025',
+    helpful: 15,
+  },
+])
+const showReviewForm = ref(false)
+const newReview = ref({
+  rating: 0,
+  name: '',
+  comment: '',
+})
+const hoverRating = ref(0)
+const filterRating = ref(null)
 
 // Sample sizes (would come from database in real app)
 const availableSizes = ref([
@@ -371,8 +623,144 @@ function addToCart() {
   window.alert(`${product.value.name} đã được thêm vào giỏ hàng`)
 }
 
+// Review computed properties and methods
+const averageRating = computed(() => {
+  if (reviews.value.length === 0) return 0
+  const sum = reviews.value.reduce((acc, review) => acc + review.rating, 0)
+  return (sum / reviews.value.length).toFixed(1)
+})
+
+const filteredReviews = computed(() => {
+  if (filterRating.value === null) {
+    return reviews.value
+  }
+  return reviews.value.filter((review) => review.rating === filterRating.value)
+})
+
+const canSubmitReview = computed(() => {
+  return (
+    newReview.value.rating > 0 &&
+    newReview.value.name.trim() !== '' &&
+    newReview.value.comment.trim() !== ''
+  )
+})
+
+function isMyReview(review) {
+  if (!currentUser.value || !review.user_id) return false
+  return currentUser.value.id === review.user_id
+}
+
+function reviewsByRating(rating) {
+  return reviews.value.filter((review) => review.rating === rating).length
+}
+
+function submitReview() {
+  if (!canSubmitReview.value) return
+
+  const review = {
+    id: reviews.value.length + 1,
+    name: newReview.value.name,
+    rating: newReview.value.rating,
+    comment: newReview.value.comment,
+    date: new Date().toLocaleDateString('vi-VN'),
+    helpful: 0,
+  }
+
+  reviews.value.unshift(review)
+
+  // Reset form
+  newReview.value = {
+    rating: 0,
+    name: '',
+    comment: '',
+  }
+  showReviewForm.value = false
+
+  // TODO: Send to API
+  // await fetch(`/api/products/${productId}/reviews`, {
+  //   method: 'POST',
+  //   body: JSON.stringify(review)
+  // })
+}
+
+function cancelReview() {
+  newReview.value = {
+    rating: 0,
+    name: '',
+    comment: '',
+  }
+  showReviewForm.value = false
+}
+
+function markHelpful(reviewId) {
+  const review = reviews.value.find((r) => r.id === reviewId)
+  if (review) {
+    review.helpful = (review.helpful || 0) + 1
+    // TODO: Send to API
+  }
+}
+
+async function deleteReview(reviewId) {
+  if (!confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+    return
+  }
+
+  try {
+    // Call API to delete review
+    const response = await fetch(buildUrl(API_ENDPOINTS.REVIEWS.DELETE(reviewId)), {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    })
+
+    if (response.ok) {
+      // Remove review from local state
+      reviews.value = reviews.value.filter((r) => r.id !== reviewId)
+      alert('Đã xóa đánh giá thành công!')
+    } else {
+      throw new Error('Không thể xóa đánh giá')
+    }
+  } catch (error) {
+    console.error('Error deleting review:', error)
+    alert('Có lỗi xảy ra khi xóa đánh giá. Vui lòng thử lại.')
+  }
+}
+
+async function fetchMyReviews() {
+  if (!currentUser.value) return
+
+  try {
+    const response = await fetch(
+      buildUrl(API_ENDPOINTS.REVIEWS.GET_MY_REVIEWS(currentUser.value.id)),
+      {
+        headers: getAuthHeaders(),
+      },
+    )
+
+    if (response.ok) {
+      const myReviews = await response.json()
+      // You can use this to highlight or filter user's reviews
+      console.log('My reviews:', myReviews)
+    }
+  } catch (error) {
+    console.error('Error fetching my reviews:', error)
+  }
+}
+
+function checkCurrentUser() {
+  const userInfo = localStorage.getItem('user-info')
+  if (userInfo) {
+    try {
+      currentUser.value = JSON.parse(userInfo)
+    } catch (e) {
+      currentUser.value = null
+    }
+  }
+}
+
 onMounted(() => {
+  checkCurrentUser()
   fetchProductDetails()
+  fetchMyReviews() // Uncomment if you want to fetch user's reviews on load
 })
 </script>
 
@@ -751,6 +1139,373 @@ onMounted(() => {
   box-shadow: 0 12px 26px rgba(29, 32, 33, 0.16);
 }
 
+/* Reviews Section Styles */
+.reviews-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #ebdbb2;
+}
+
+.reviews-header {
+  margin-bottom: 1.5rem;
+}
+
+.reviews-header h2 {
+  font-size: 1.5rem;
+  color: #3c3836;
+  margin: 0 0 1rem 0;
+}
+
+.rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.average-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rating-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #d79921;
+  line-height: 1;
+}
+
+.stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star {
+  color: #d5c4a1;
+  font-size: 1.25rem;
+}
+
+.star.filled {
+  color: #d79921;
+}
+
+.review-count {
+  color: #665c54;
+  font-size: 0.95rem;
+}
+
+.write-review {
+  margin: 1.5rem 0;
+}
+
+.write-review-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 2px solid #d79921;
+  color: #d79921;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.write-review-btn:hover {
+  background: #d79921;
+  color: #1d2021;
+}
+
+.write-review-btn svg {
+  stroke: currentColor;
+}
+
+.review-form {
+  background: #fbf1c7;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #ebdbb2;
+  margin-bottom: 2rem;
+}
+
+.review-form h3 {
+  margin: 0 0 1rem 0;
+  color: #3c3836;
+  font-size: 1.1rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #3c3836;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.star-input {
+  color: #d5c4a1;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.star-input.filled,
+.star-input.hover {
+  color: #d79921;
+  transform: scale(1.1);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d5c4a1;
+  border-radius: 8px;
+  background: #f9f5d7;
+  color: #3c3836;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #d79921;
+  box-shadow: 0 0 0 3px rgba(215, 153, 33, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.submit-review-btn {
+  background: #d79921;
+  color: #1d2021;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-review-btn:hover:not(:disabled) {
+  background: #b8860b;
+  transform: translateY(-1px);
+}
+
+.submit-review-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: transparent;
+  border: 1px solid #928374;
+  color: #665c54;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #ebdbb2;
+}
+
+.reviews-filter {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: #f9f5d7;
+  border: 1px solid #d5c4a1;
+  color: #665c54;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background: #ebdbb2;
+}
+
+.filter-btn.active {
+  background: #d79921;
+  color: #1d2021;
+  border-color: #d79921;
+  font-weight: 600;
+}
+
+.review-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.review-item {
+  background: #fbf1c7;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #ebdbb2;
+  transition: all 0.2s ease;
+}
+
+.review-item:hover {
+  box-shadow: 0 4px 12px rgba(60, 56, 54, 0.1);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.reviewer-info {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d79921;
+  color: #1d2021;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.reviewer-name {
+  margin: 0;
+  color: #3c3836;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.review-stars {
+  display: flex;
+  gap: 0.2rem;
+  margin-top: 0.25rem;
+}
+
+.review-stars .star {
+  font-size: 0.95rem;
+}
+
+.review-date {
+  color: #928374;
+  font-size: 0.85rem;
+}
+
+.review-comment {
+  color: #504945;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+}
+
+.review-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.helpful-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid #d5c4a1;
+  color: #665c54;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.helpful-btn:hover {
+  background: #ebdbb2;
+  border-color: #d79921;
+  color: #d79921;
+}
+
+.helpful-btn svg {
+  stroke: currentColor;
+}
+
+.delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid #fb4934;
+  color: #fb4934;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #fb4934;
+  color: #fbf1c7;
+}
+
+.delete-btn svg {
+  stroke: currentColor;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #928374;
+}
+
+.no-reviews svg {
+  stroke: #d5c4a1;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.no-reviews p {
+  margin: 0;
+  font-size: 1rem;
+}
+
 @media (max-width: 768px) {
   .product-content {
     grid-template-columns: 1fr;
@@ -760,6 +1515,28 @@ onMounted(() => {
 
   .product-info h1 {
     font-size: 1.5rem;
+  }
+
+  .reviews-filter {
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .rating-number {
+    font-size: 2rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .submit-review-btn,
+  .cancel-btn {
+    width: 100%;
   }
 }
 </style>

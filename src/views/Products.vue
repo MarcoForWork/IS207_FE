@@ -195,6 +195,7 @@ import { useRoute } from 'vue-router'
 import ProductCard from '@/components/product/ProductCard.vue'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
+import { buildUrl, API_ENDPOINTS } from '@/config/api'
 
 const route = useRoute()
 const products = ref([])
@@ -337,7 +338,7 @@ async function fetchProducts() {
   loading.value = true
   try {
     // TODO: Replace with actual API endpoint
-    // const response = await fetch('https://your-api.com/api/products')
+    // const response = await fetch(buildUrl(API_ENDPOINTS.PRODUCTS.LIST))
     // const data = await response.json()
     // products.value = data.map(p => ({
     //   id: p.id,
