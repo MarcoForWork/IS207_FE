@@ -1,23 +1,33 @@
 // API Configuration and Constants
 // Update BASE_URL with your actual backend API URL
 export const API_CONFIG = {
-  BASE_URL: 'https://your-api.com/api',
+  BASE_URL: 'http://127.0.0.1:8000',
   TIMEOUT: 10000, // Request timeout in milliseconds
 }
+
+export function getHeaders() {
+  const token = localStorage.getItem('auth_token')
+  return {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }
+}
+
 
 // API Endpoints
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: '/login',
-    SIGNUP: '/signup',
-    LOGOUT: '/logout',
-    REFRESH_TOKEN: '/refresh-token',
-    FORGOT_PASSWORD: '/forgot-password',
-    RESET_PASSWORD: '/reset-password',
+    LOGIN: '/api/login',
+    SIGNUP: '/api/register',
+    LOGOUT: '/api/logout',
+    REFRESH_TOKEN: '/api/refresh-token',
+    FORGOT_PASSWORD: '/api/forgot-password',
+    RESET_PASSWORD: '/api/reset-password',
   },
 
-  // User/Customer
+  // User/Customers
   CUSTOMER: {
     PROFILE: '/customer/profile',
     UPDATE_PROFILE: '/customer/profile/update',
@@ -28,11 +38,15 @@ export const API_ENDPOINTS = {
 
   // Products
   PRODUCTS: {
-    LIST: '/products',
-    DETAIL: (productId) => `/products/${productId}`,
+    LIST: '/api/products',
+    IMAGES: '/api/products-images',
+    DETAIL: (id) => `/api/products/${id}`,
+    BY_COLOR: (id) => `/api/products-by-color/${id}`,
     SEARCH: '/products/search',
     BY_CATEGORY: (categoryId) => `/products/category/${categoryId}`,
     BY_COLLECTION: (collectionId) => `/products/collection/${collectionId}`,
+    HIGHLIGHTS: (id) => `/api/products-highlights/${id}`,
+    FAQS: (id) => `/api/products-faqs/${id}`,
     FEATURED: '/products/featured',
     NEW_ARRIVALS: '/products/new-arrivals',
     BEST_SELLERS: '/products/best-sellers',
@@ -234,12 +248,12 @@ export const getAuthHeaders = () => {
   }
 }
 
-// Helper function to get common headers
-export const getHeaders = (includeAuth = false) => {
-  if (includeAuth) {
-    return getAuthHeaders()
-  }
-  return {
-    'Content-Type': 'application/json',
-  }
-}
+// // Helper function to get common headers
+// export const getHeaders = (includeAuth = false) => {
+//   if (includeAuth) {
+//     return getAuthHeaders()
+//   }
+//   return {
+//     'Content-Type': 'application/json',
+//   }
+// }

