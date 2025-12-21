@@ -2,6 +2,7 @@
   <div>
     <Header />
     <Navbar />
+
     <main class="auth-page">
       <div class="auth-container">
         <div class="auth-card">
@@ -19,6 +20,7 @@
                 type="email"
                 placeholder="you@example.com"
                 required
+                autocomplete="email"
               />
             </div>
 
@@ -30,6 +32,7 @@
                 type="password"
                 placeholder="••••••••"
                 required
+                autocomplete="current-password"
               />
             </div>
 
@@ -48,6 +51,7 @@
         </div>
       </div>
     </main>
+
     <Footer />
   </div>
 </template>
@@ -61,43 +65,69 @@ import Footer from '@/components/global/Footer.vue'
 import { buildUrl, API_ENDPOINTS, getHeaders } from '@/config/api'
 
 const router = useRouter()
+
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
 
+function extractErrorMessage(data) {
+  if (!data) return null
+  if (data.message) return data.message
+  if (data.error) return data.error
+  if (data.errors && typeof data.errors === 'object') {
+    return Object.values(data.errors).flat().join(' ')
+  }
+  return null
+}
+
 async function handleSubmit() {
   error.value = ''
-  if (!email.value || !password.value) {
+
+  const emailVal = email.value.trim()
+  const passVal = password.value
+
+  if (!emailVal || !passVal) {
     error.value = 'Vui lòng nhập đầy đủ thông tin.'
     return
   }
 
   loading.value = true
   try {
-    // TODO: Replace with real API call
-    // const response = await fetch(buildUrl(API_ENDPOINTS.AUTH.LOGIN), {
-    //   method: 'POST',
-    //   headers: getHeaders(),
-    //   body: JSON.stringify({
-    //     email: email.value,
-    //     password: password.value,
-    //   }),
-    // })
-    // const data = await response.json()
-    // localStorage.setItem('user-info', JSON.stringify(data.user))
-    // router.push('/')
+    const response = await fetch(buildUrl(API_ENDPOINTS.AUTH.LOGIN), {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        email: emailVal,
+        password: passVal,
+      }),
+    })
 
-    // Demo success flow
-    await new Promise((res) => setTimeout(res, 600))
-    localStorage.setItem(
-      'user-info',
-      JSON.stringify({ name: 'Test User', email: email.value, token: '1231' }),
-    )
-    router.push('/')
+    const data = await response.json().catch(() => null)
+
+    if (!response.ok) {
+      error.value = extractErrorMessage(data) || 'Đăng nhập thất bại. Vui lòng thử lại.'
+      return
+    }
+
+    // Lưu token + user
+    if (data?.token) localStorage.setItem('auth_token', data.token)
+    if (data?.user) localStorage.setItem('user-info', JSON.stringify(data.user))
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data.user))
+
+    // Điều hướng theo role
+    const role = data?.user?.role
+    if (role === 'admin') {
+      // Điều hướng sang trang admin (route bạn cấu hình trỏ tới Admin.vue)
+      router.push('/admin')
+    } else {
+      // Customer / role khác
+      router.push('/')
+    }
   } catch (e) {
     console.error(e)
-    error.value = 'Đăng nhập thất bại. Vui lòng thử lại.'
+    error.value = 'Không thể kết nối máy chủ. Vui lòng thử lại.'
   } finally {
     loading.value = false
   }

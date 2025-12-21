@@ -2,13 +2,12 @@
   <div>
     <Header />
     <Navbar />
+
     <main class="cart-page">
       <div class="cart-container">
         <div class="cart-header">
           <h1 class="cart-title">Giỏ Hàng</h1>
-          <span v-if="cartItems.length > 0" class="item-count"
-            >{{ cartItems.length }} sản phẩm</span
-          >
+          <span v-if="cartItems.length > 0" class="item-count">{{ cartItems.length }} sản phẩm</span>
         </div>
 
         <!-- Empty Cart State -->
@@ -25,6 +24,7 @@
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
+
           <p class="empty-message">Giỏ hàng của bạn đang trống</p>
           <router-link to="/products" class="continue-shopping-btn">Tiếp Tục Mua Sắm</router-link>
         </div>
@@ -39,20 +39,31 @@
               <span class="header-total">Thành tiền</span>
               <span class="header-action"></span>
             </div>
+
             <div v-for="item in cartItems" :key="item.id" class="cart-item">
               <div class="item-product">
                 <div class="item-image">
-                  <img :src="item.image" :alt="item.name" />
+                  <!-- ✅ dùng main_image -->
+                  <img :src="item.main_image || fallbackImage" :alt="item.name" />
                 </div>
+
                 <div class="item-info">
                   <h3 class="item-name">{{ item.name }}</h3>
+
                   <div class="item-meta">
                     <span class="meta-badge">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        :style="{ color: item.color_code || '#999' }"
+                      >
                         <circle cx="12" cy="12" r="10" />
                       </svg>
                       {{ item.color_name }}
                     </span>
+
                     <span class="meta-badge">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                         <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -78,6 +89,7 @@
                       <path d="M19 13H5v-2h14v2z" />
                     </svg>
                   </button>
+
                   <input
                     type="number"
                     class="qty-input"
@@ -85,6 +97,7 @@
                     @change="updateQuantity(item.id, item.quantity)"
                     min="1"
                   />
+
                   <button class="qty-btn" @click="increaseQuantity(item.id)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -123,14 +136,6 @@
               <span>{{ formatPrice(subtotal) }}</span>
             </div>
 
-            <div class="summary-row">
-              <span>Phí vận chuyển</span>
-              <span :class="{ 'free-shipping': shippingFee === 0 }">
-                {{ shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee) }}
-                <span v-if="shippingFee === 0" class="free-badge">✓</span>
-              </span>
-            </div>
-
             <!-- Discount Code -->
             <div class="discount-section">
               <input
@@ -161,6 +166,7 @@
         </div>
       </div>
     </main>
+
     <Footer />
   </div>
 </template>
@@ -171,94 +177,105 @@ import { useRouter } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
 import Footer from '@/components/global/Footer.vue'
-import { buildUrl, API_ENDPOINTS, getAuthHeaders } from '@/config/api'
+import { getAuthHeaders } from '@/config/api'
 
 const router = useRouter()
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
 
 // Cart state
 const cartItems = ref([])
 const discountCode = ref('')
 const discountAmount = ref(0)
-const shippingFee = ref(0)
 
-// Sample cart data (replace with actual cart data from store/API)
+// fallback ảnh
+const fallbackImage = 'https://picsum.photos/seed/cart/800/800'
+
+function getLoggedInUserId() {
+  const tryKeys = ['user', 'auth_user', 'currentUser', 'me']
+  for (const k of tryKeys) {
+    const raw = localStorage.getItem(k)
+    if (!raw) continue
+    try {
+      const obj = JSON.parse(raw)
+      if (obj?.id) return Number(obj.id)
+      if (obj?.user?.id) return Number(obj.user.id)
+    } catch (_) {}
+  }
+
+  const uid = localStorage.getItem('user_id')
+  if (uid) return Number(uid)
+
+  return null
+}
+
 async function loadCart() {
-  // TODO: Replace with actual API endpoint
-  // Example API call:
-  // try {
-  //   const response = await fetch(buildUrl(API_ENDPOINTS.CART.GET), {
-  //     headers: getAuthHeaders(),
-  //   })
-  //   const data = await response.json()
-  //   cartItems.value = data.items.map(item => ({
-  //     id: item.id,
-  //     variant_id: item.variant_id,
-  //     product_id: item.product_id,
-  //     name: item.product_name,
-  //     slug: item.product_slug,
-  //     color_name: item.color_name,
-  //     color_code: item.color_code,
-  //     size_name: item.size_name,
-  //     size_id: item.size_id,
-  //     price: item.price,
-  //     quantity: item.quantity,
-  //     stock: item.stock,
-  //     image: item.image_url
-  //   }))
-  // } catch (error) {
-  //   console.error('Error loading cart:', error)
-  // }
+  try {
+    const userId = getLoggedInUserId()
+    if (!userId) {
+      cartItems.value = []
+      alert('Bạn cần đăng nhập để xem giỏ hàng.')
+      return
+    }
 
-  // Sample data for development
-  cartItems.value = [
-    {
-      id: 1,
-      variant_id: 1,
-      product_id: 1,
-      name: 'Áo Thun Waffle Thoáng Mát',
-      slug: 'ao-thun-waffle-thoang-mat',
-      color_name: 'Xanh Navy',
-      color_code: '#001f3f',
-      size_name: 'M',
-      size_id: 2,
-      price: 120650,
-      quantity: 2,
-      stock: 15,
-      image: 'https://picsum.photos/seed/p1/800/800',
-    },
-    {
-      id: 2,
-      variant_id: 10,
-      product_id: 3,
-      name: 'Áo Polo Pique Thoáng Mát',
-      slug: 'ao-polo-pique-thoang-mat',
-      color_name: 'Xanh',
-      color_code: '#0EA5E9',
-      size_name: 'L',
-      size_id: 3,
-      price: 168150,
-      quantity: 1,
-      stock: 20,
-      image: 'https://picsum.photos/seed/p3/800/800',
-    },
-  ]
+    const res = await fetch(`${API_BASE}/api/cart/${userId}`, {
+      headers: {
+        ...getAuthHeaders(),
+        Accept: 'application/json',
+      },
+    })
+
+    if (!res.ok) {
+      cartItems.value = []
+      console.error('Load cart failed:', res.status)
+      if (res.status === 401) alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
+      return
+    }
+
+    const json = await res.json()
+    const items = Array.isArray(json?.data) ? json.data : []
+
+    cartItems.value = items.map((it) => ({
+      id: it.id,
+      order_id: it.order_id,
+      variant_id: it.variant_id,
+      product_id: it.product_id,
+      name: it.name,
+
+      color_id: it.color_id,
+      color_name: it.color_name,
+      color_code: it.color_code,
+
+      size_id: it.size_id,
+      size_name: it.size_name,
+
+      price: Number(it.price) || 0,
+      quantity: Number(it.quantity) || 1,
+
+      // ✅ dùng đúng field từ API của bạn
+      main_image: it.main_image || '',
+
+      // nếu backend không trả stock thì set tạm lớn để không bị block nút +
+      stock: Number(it.stock ?? 99),
+    }))
+  } catch (err) {
+    console.error('Error loading cart:', err)
+    cartItems.value = []
+  }
 }
 
 // Computed
-const subtotal = computed(() => {
-  return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-})
+const subtotal = computed(() =>
+  cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0),
+)
 
-const total = computed(() => {
-  return subtotal.value + shippingFee.value - discountAmount.value
-})
+const total = computed(() => subtotal.value - discountAmount.value)
 
 // Methods
 function formatPrice(price) {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(price)
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+    Number(price) || 0,
+  )
 }
 
 async function increaseQuantity(itemId) {
@@ -266,12 +283,6 @@ async function increaseQuantity(itemId) {
   if (item && item.quantity < item.stock) {
     item.quantity++
     await saveCart()
-    // TODO: Call API to update quantity
-    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
-    //   method: 'PATCH',
-    //   headers: getAuthHeaders(),
-    //   body: JSON.stringify({ quantity: item.quantity })
-    // })
   }
 }
 
@@ -280,81 +291,52 @@ async function decreaseQuantity(itemId) {
   if (item && item.quantity > 1) {
     item.quantity--
     await saveCart()
-    // TODO: Call API to update quantity
-    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
-    //   method: 'PATCH',
-    //   headers: getAuthHeaders(),
-    //   body: JSON.stringify({ quantity: item.quantity })
-    // })
   }
 }
 
 async function updateQuantity(itemId, newQuantity) {
   const item = cartItems.value.find((i) => i.id === itemId)
-  if (item) {
-    if (newQuantity < 1) {
-      item.quantity = 1
-    } else if (newQuantity > item.stock) {
-      item.quantity = item.stock
-    } else {
-      item.quantity = newQuantity
+  if (!item) return
+
+  const q = Number(newQuantity) || 1
+  if (q < 1) item.quantity = 1
+  else if (q > item.stock) item.quantity = item.stock
+  else item.quantity = q
+
+  await saveCart()
+}
+
+async function removeItem(orderItemId) {
+  try {
+    const res = await fetch(`${API_BASE}/api/orders/remove-from-cart/${orderItemId}`, {
+      method: 'DELETE',
+      headers: {
+        ...getAuthHeaders(),
+        Accept: 'application/json',
+      },
+    })
+
+    const json = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      console.error('Remove failed:', res.status, json)
+      if (res.status === 401) alert('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
+      else alert(json?.message || 'Xóa sản phẩm thất bại')
+      return
     }
-    await saveCart()
-    // TODO: Call API to update quantity
-    // await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
-    //   method: 'PATCH',
-    //   headers: getAuthHeaders(),
-    //   body: JSON.stringify({ quantity: item.quantity })
-    // })
+
+    // xóa trên UI luôn
+    cartItems.value = cartItems.value.filter((i) => i.id !== orderItemId)
+  } catch (e) {
+    console.error('Remove error:', e)
+    alert('Không thể kết nối server để xóa sản phẩm')
   }
 }
 
-async function removeItem(itemId) {
-  // TODO: Call API to remove item from cart
-  // try {
-  //   await fetch(buildUrl(API_ENDPOINTS.CART.REMOVE_ITEM(itemId)), {
-  //     method: 'DELETE',
-  //     headers: getAuthHeaders(),
-  //   })
-  // } catch (error) {
-  //   console.error('Error removing item:', error)
-  //   return
-  // }
-
-  const index = cartItems.value.findIndex((i) => i.id === itemId)
-  if (index > -1) {
-    cartItems.value.splice(index, 1)
-    await saveCart()
-  }
-}
 
 async function applyDiscount() {
   if (!discountCode.value.trim()) return
 
-  // TODO: Replace with actual API endpoint for discount validation
-  // try {
-  //   const response = await fetch(buildUrl(API_ENDPOINTS.COUPONS.VALIDATE), {
-  //     method: 'POST',
-  //     headers: getAuthHeaders(),
-  //     body: JSON.stringify({
-  //       code: discountCode.value,
-  //       subtotal: subtotal.value
-  //     })
-  //   })
-  //   const data = await response.json()
-  //   if (data.valid) {
-  //     discountAmount.value = data.discount_amount
-  //     alert('Mã giảm giá đã được áp dụng!')
-  //   } else {
-  //     alert(data.message || 'Mã giảm giá không hợp lệ')
-  //     discountAmount.value = 0
-  //   }
-  // } catch (error) {
-  //   console.error('Error validating discount:', error)
-  //   alert('Không thể xác thực mã giảm giá')
-  // }
-
-  // Sample discount logic for development
   if (discountCode.value.toUpperCase() === 'SALE10') {
     discountAmount.value = Math.min(subtotal.value * 0.1, 50000)
     alert('Mã giảm giá đã được áp dụng!')
@@ -365,33 +347,9 @@ async function applyDiscount() {
 }
 
 async function saveCart() {
-  // TODO: Sync cart with backend API
-  // try {
-  //   await fetch(buildUrl(API_ENDPOINTS.CART.GET), {
-  //     method: 'PUT',
-  //     headers: getAuthHeaders(),
-  //     body: JSON.stringify({ items: cartItems.value })
-  //   })
-  // } catch (error) {
-  //   console.error('Error syncing cart:', error)
-  // }
-
-  // Save to localStorage as fallback
+  // fallback lưu local (tuỳ bạn có muốn giữ)
   localStorage.setItem('cart', JSON.stringify(cartItems.value))
 }
-
-// TODO: Helper function for updating cart item quantity via API
-// async function updateCartItemQuantity(itemId, quantity) {
-//   try {
-//     await fetch(buildUrl(API_ENDPOINTS.CART.UPDATE_ITEM(itemId)), {
-//       method: 'PATCH',
-//       headers: getAuthHeaders(),
-//       body: JSON.stringify({ quantity })
-//     })
-//   } catch (error) {
-//     console.error('Error updating quantity:', error)
-//   }
-// }
 
 function goToCheckout() {
   if (cartItems.value.length === 0) return
@@ -400,12 +358,6 @@ function goToCheckout() {
 
 onMounted(() => {
   loadCart()
-  // Calculate shipping fee based on subtotal
-  if (subtotal.value >= 500000) {
-    shippingFee.value = 0 // Free shipping over 500k
-  } else {
-    shippingFee.value = 30000
-  }
 })
 </script>
 
@@ -765,26 +717,6 @@ onMounted(() => {
   color: #3c3836;
 }
 
-.free-shipping {
-  color: #98971a;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-}
-
-.free-badge {
-  background-color: #98971a;
-  color: white;
-  font-size: 0.75rem;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .discount-section {
   display: flex;
   gap: 0.625rem;
@@ -851,16 +783,15 @@ onMounted(() => {
 }
 
 .total-row {
-  padding: 1.25rem 0 0 0;
-  font-size: 1.1875rem;
-  font-weight: 700;
-  background-color: #fef8ed;
   padding: 1.25rem;
   margin: 0 -2rem;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #fef8ed;
+  font-size: 1.1875rem;
+  font-weight: 700;
 }
 
 .total-amount {

@@ -2,6 +2,7 @@
   <div>
     <Header />
     <Navbar />
+
     <main class="auth-page">
       <div class="auth-container">
         <div class="auth-card">
@@ -27,6 +28,17 @@
               />
             </div>
 
+            <!-- Optional fields (match DB) -->
+            <div class="form-group">
+              <label for="phone">Số điện thoại</label>
+              <input id="phone" v-model="phone" type="text" placeholder="090xxxxxxx" />
+            </div>
+
+            <div class="form-group">
+              <label for="address">Địa chỉ</label>
+              <input id="address" v-model="address" type="text" placeholder="Nhập địa chỉ" />
+            </div>
+
             <div class="form-group">
               <label for="password">Mật khẩu</label>
               <input
@@ -50,6 +62,7 @@
             </div>
 
             <p v-if="error" class="form-error">{{ error }}</p>
+            <p v-if="success" class="form-success">{{ success }}</p>
 
             <button class="auth-button" type="submit" :disabled="loading">
               <span v-if="loading">Đang tạo tài khoản...</span>
@@ -64,6 +77,7 @@
         </div>
       </div>
     </main>
+
     <Footer />
   </div>
 </template>
@@ -77,56 +91,91 @@ import Footer from '@/components/global/Footer.vue'
 import { buildUrl, API_ENDPOINTS, getHeaders } from '@/config/api'
 
 const router = useRouter()
+
 const name = ref('')
 const email = ref('')
+const phone = ref('')
+const address = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+
 const loading = ref(false)
 const error = ref('')
+const success = ref('')
+
+function extractErrorMessage(data) {
+  if (!data) return null
+  if (data.message) return data.message
+  if (data.error) return data.error
+  if (data.errors && typeof data.errors === 'object') {
+    return Object.values(data.errors).flat().join(' ')
+  }
+  return null
+}
 
 async function handleSubmit() {
   error.value = ''
-  if (!name.value || !email.value || !password.value || !confirmPassword.value) {
+  success.value = ''
+
+  const nameVal = name.value.trim()
+  const emailVal = email.value.trim()
+  const phoneVal = phone.value.trim()
+  const addressVal = address.value.trim()
+  const passVal = password.value
+  const confirmVal = confirmPassword.value
+
+  if (!nameVal || !emailVal || !passVal || !confirmVal) {
     error.value = 'Vui lòng nhập đầy đủ thông tin.'
     return
   }
 
-  if (password.value.length < 8) {
+  if (passVal.length < 8) {
     error.value = 'Mật khẩu cần tối thiểu 8 ký tự.'
     return
   }
 
-  if (password.value !== confirmPassword.value) {
+  if (passVal !== confirmVal) {
     error.value = 'Mật khẩu nhập lại không khớp.'
     return
   }
 
   loading.value = true
   try {
-    // TODO: Replace with real API call
-    // const response = await fetch(buildUrl(API_ENDPOINTS.AUTH.SIGNUP), {
-    //   method: 'POST',
-    //   headers: getHeaders(),
-    //   body: JSON.stringify({
-    //     name: name.value,
-    //     email: email.value,
-    //     password: password.value,
-    //   }),
-    // })
-    // const data = await response.json()
-    // localStorage.setItem('user-info', JSON.stringify(data.user))
-    // router.push('/')
+    // Yêu cầu: API_ENDPOINTS.AUTH.SIGNUP phải đúng, ví dụ '/api/register'
+    const response = await fetch(buildUrl(API_ENDPOINTS.AUTH.SIGNUP), {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        name: nameVal,
+        email: emailVal,
+        password: passVal,
+        password_confirmation: confirmVal, // nếu backend không dùng thì vẫn ok
+        phone: phoneVal || null,
+        address: addressVal || null,
+      }),
+    })
 
-    // Demo success flow
-    await new Promise((res) => setTimeout(res, 700))
-    localStorage.setItem(
-      'user-info',
-      JSON.stringify({ name: name.value, email: email.value, token: 'demo-token' }),
-    )
-    router.push('/')
+    const data = await response.json().catch(() => null)
+
+    if (!response.ok) {
+      error.value = extractErrorMessage(data) || 'Đăng ký thất bại. Vui lòng thử lại.'
+      return
+    }
+
+    // Đăng ký thành công -> hiện thông báo và chuyển qua Login
+    success.value = 'Đăng ký thành công! Đang chuyển sang trang đăng nhập...'
+
+    // Nếu backend có trả token/user mà bạn KHÔNG muốn auto-login,
+    // thì KHÔNG lưu token ở đây. Nếu muốn lưu, mở comment dưới:
+    // if (data?.token) localStorage.setItem('auth_token', data.token)
+    // if (data?.user) localStorage.setItem('user-info', JSON.stringify(data.user))
+
+    setTimeout(() => {
+      router.push('/login')
+    }, 1000)
   } catch (e) {
     console.error(e)
-    error.value = 'Đăng ký thất bại. Vui lòng thử lại.'
+    error.value = 'Không thể kết nối máy chủ. Vui lòng thử lại.'
   } finally {
     loading.value = false
   }
@@ -264,6 +313,15 @@ function goToLogin() {
   color: #cc241d;
   background: #fff2f0;
   border: 1px solid #f5c2c7;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+.form-success {
+  color: #1d7f3b;
+  background: #eefaf1;
+  border: 1px solid #bfe6c8;
   border-radius: 10px;
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
