@@ -209,6 +209,26 @@ function getLoggedInUserId() {
   return null
 }
 
+async function updateCartItemQuantityApi(itemId, quantity) {
+  const res = await fetch(`${API_BASE}/api/orders/update-cart/${itemId}`, {
+    method: 'PUT',
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ quantity }),
+  })
+
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const msg = json?.message || `Update cart failed (${res.status})`
+    throw new Error(msg)
+  }
+  return json
+}
+
+
 async function loadCart() {
   try {
     const userId = getLoggedInUserId()
@@ -280,17 +300,43 @@ function formatPrice(price) {
 
 async function increaseQuantity(itemId) {
   const item = cartItems.value.find((i) => i.id === itemId)
-  if (item && item.quantity < item.stock) {
-    item.quantity++
-    await saveCart()
+  if (!item) return
+
+  const prev = item.quantity
+  const next = Math.min(prev + 1, Number(item.stock ?? 99))
+
+  if (next === prev) return
+
+  // Optimistic UI
+  item.quantity = next
+
+  try {
+    await updateCartItemQuantityApi(itemId, next)
+  } catch (e) {
+    console.error(e)
+    item.quantity = prev // rollback
+    alert(e.message || 'Không thể cập nhật số lượng')
   }
 }
 
+
 async function decreaseQuantity(itemId) {
   const item = cartItems.value.find((i) => i.id === itemId)
-  if (item && item.quantity > 1) {
-    item.quantity--
-    await saveCart()
+  if (!item) return
+
+  const prev = item.quantity
+  const next = Math.max(prev - 1, 1)
+
+  if (next === prev) return
+
+  item.quantity = next
+
+  try {
+    await updateCartItemQuantityApi(itemId, next)
+  } catch (e) {
+    console.error(e)
+    item.quantity = prev
+    alert(e.message || 'Không thể cập nhật số lượng')
   }
 }
 
@@ -298,12 +344,24 @@ async function updateQuantity(itemId, newQuantity) {
   const item = cartItems.value.find((i) => i.id === itemId)
   if (!item) return
 
-  const q = Number(newQuantity) || 1
-  if (q < 1) item.quantity = 1
-  else if (q > item.stock) item.quantity = item.stock
-  else item.quantity = q
+  const prev = item.quantity
+  let q = Number(newQuantity)
 
-  await saveCart()
+  if (!Number.isFinite(q) || q < 1) q = 1
+  const stock = Number(item.stock ?? 99)
+  if (q > stock) q = stock
+
+  if (q === prev) return
+
+  item.quantity = q
+
+  try {
+    await updateCartItemQuantityApi(itemId, q)
+  } catch (e) {
+    console.error(e)
+    item.quantity = prev
+    alert(e.message || 'Không thể cập nhật số lượng')
+  }
 }
 
 async function removeItem(orderItemId) {
