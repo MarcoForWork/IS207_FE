@@ -98,7 +98,7 @@
                   />
                 </div>
 
-                <p v-if="addressSaving" style="margin: 6px 0 0; color: #7c6f64; font-size: 0.9rem">
+                <p v-if="savingAddress" style="margin: 6px 0 0; color: #7c6f64; font-size: 0.9rem">
                   Đang lưu địa chỉ...
                 </p>
               </div>
@@ -140,12 +140,7 @@
               <div class="section-content">
                 <div class="payment-options">
                   <label class="payment-option" v-for="option in paymentMethods" :key="option.id">
-                    <input
-                      type="radio"
-                      :value="option.id"
-                      v-model="form.paymentMethod"
-                      name="payment"
-                    />
+                    <input type="radio" :value="option.id" v-model="form.paymentMethod" name="payment" />
                     <div class="option-content">
                       <span class="option-title">{{ option.name }}</span>
                       <span class="option-desc">{{ option.description }}</span>
@@ -226,19 +221,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
 import { getAuthHeaders } from '@/config/api'
 
 const router = useRouter()
-
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
 
 const loading = ref(true)
 const placing = ref(false)
-const addressSaving = ref(false)
+const savingAddress = ref(false)
 
 const cartItems = ref([])
 const orderId = ref(null)
@@ -250,7 +244,7 @@ const form = ref({
   shippingCity: '',
   shippingCountry: 'Vietnam',
 
-  shippingMethod: 1, // default
+  shippingMethod: 1,
   paymentMethod: 'cod',
   notes: '',
 })
@@ -296,73 +290,83 @@ function getLoggedInUserId() {
   return null
 }
 
-function pickOrderFromResponse(json) {
+function extractOrder(json) {
   return json?.data || json?.order || json || null
+}
+
+function hydrateFormFromOrder(order) {
+  form.value.shippingAddress =
+    order?.shipping_address_line || order?.address_line || order?.address || order?.shipping_address || ''
+  form.value.shippingWard = order?.shipping_ward || order?.ward || ''
+  form.value.shippingDistrict = order?.shipping_district || order?.district || ''
+  form.value.shippingCity = order?.shipping_city || order?.city || ''
+  form.value.shippingCountry = order?.shipping_country || order?.country || 'Vietnam'
+}
+
+/** helper parse JSON an toàn (vì update-total có thể không trả json) */
+async function safeReadJson(res) {
+  const text = await res.text().catch(() => '')
+  if (!text) return {}
+  try {
+    return JSON.parse(text)
+  } catch {
+    return { raw: text }
+  }
 }
 
 async function fetchCart(userId) {
   const res = await fetch(`${API_BASE}/api/cart/${userId}`, {
-    headers: {
-      ...getAuthHeaders(),
-      Accept: 'application/json',
-    },
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
   })
-
-  const json = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const msg = json?.message || `Load cart failed (${res.status})`
-    throw new Error(msg)
-  }
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Load cart failed (${res.status})`)
   return json
 }
 
 async function applyAddressToOrder(oid) {
   const res = await fetch(`${API_BASE}/api/orders/apply-address/${oid}`, {
     method: 'POST',
-    headers: {
-      ...getAuthHeaders(),
-      Accept: 'application/json',
-    },
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
   })
-  const json = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const msg = json?.message || `Apply address failed (${res.status})`
-    throw new Error(msg)
-  }
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Apply address failed (${res.status})`)
   return json
 }
 
 async function getOrderById(oid) {
   const res = await fetch(`${API_BASE}/api/orders/${oid}`, {
-    headers: {
-      ...getAuthHeaders(),
-      Accept: 'application/json',
-    },
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
   })
-  const json = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const msg = json?.message || `Get order failed (${res.status})`
-    throw new Error(msg)
-  }
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Get order failed (${res.status})`)
   return json
 }
 
-async function postAddressOrder(oid) {
-  addressSaving.value = true
+/**
+ * (TUỲ BACKEND CỦA BẠN)
+ * Nếu bạn vẫn có endpoint lưu địa chỉ như trước (body: address_line, ward, district, city)
+ * thì giữ hàm này và gọi khi bấm Đặt Hàng.
+ *
+ * ⚠️ LƯU Ý QUAN TRỌNG:
+ * - Bạn vừa đổi PUT /orders/checkout/{id} => checkoutOrder (set status processing)
+ * => ĐỪNG dùng PUT /checkout/{id} để lưu địa chỉ nữa.
+ * - Nếu bạn vẫn muốn lưu địa chỉ, hãy tạo route riêng ví dụ:
+ *   POST /orders/update-address/{id}
+ * rồi thay URL ở dưới cho đúng.
+ */
+async function saveAddressToOrder(oid) {
+  savingAddress.value = true
   try {
     const payload = {
-      shipping_address_line: form.value.shippingAddress,
-      shipping_ward: form.value.shippingWard,
-      shipping_district: form.value.shippingDistrict,
-      shipping_city: form.value.shippingCity,
-      shipping_country: form.value.shippingCountry,
-
-      payment_method: form.value.paymentMethod,
-      notes: form.value.notes,
+      address_line: form.value.shippingAddress,
+      ward: form.value.shippingWard,
+      district: form.value.shippingDistrict,
+      city: form.value.shippingCity,
     }
 
-    const res = await fetch(`${API_BASE}/api/orders/checkout/${oid}`, {
-      method: 'POST',
+    // ✅ Hãy đổi URL này theo route lưu địa chỉ thực tế của bạn
+    const res = await fetch(`${API_BASE}/api/orders/update_address/${oid}`, {
+      method: 'PUT', // giữ POST để không đụng PUT checkoutOrder
       headers: {
         ...getAuthHeaders(),
         Accept: 'application/json',
@@ -371,31 +375,51 @@ async function postAddressOrder(oid) {
       body: JSON.stringify(payload),
     })
 
-    const json = await res.json().catch(() => ({}))
+    const json = await safeReadJson(res)
     if (!res.ok) {
-      const msg = json?.message || `Save address failed (${res.status})`
-      throw new Error(msg)
+      const firstErr =
+        json?.errors && typeof json.errors === 'object'
+          ? Object.values(json.errors)?.flat()?.[0]
+          : null
+      throw new Error(firstErr || json?.message || `Save address failed (${res.status})`)
     }
     return json
   } finally {
-    addressSaving.value = false
+    savingAddress.value = false
   }
 }
 
-function hydrateFormFromOrder(order) {
-  // chặn watcher bắn API lúc đang đổ dữ liệu
-  isHydrating.value = true
+/** ✅ PUT /orders/update-total/{order_id}  body: { shipping_fee } */
+async function updateOrderTotalPrice(oid, shippingFee) {
+  const res = await fetch(`${API_BASE}/api/orders/update-total/${oid}`, {
+    method: 'PUT',
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ shipping_fee: Number(shippingFee) || 0 }),
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) {
+    const firstErr =
+      json?.errors && typeof json.errors === 'object'
+        ? Object.values(json.errors)?.flat()?.[0]
+        : null
+    throw new Error(firstErr || json?.message || `Update total failed (${res.status})`)
+  }
+  return json
+}
 
-  form.value.shippingAddress = order?.shipping_address_line || ''
-  form.value.shippingWard = order?.shipping_ward || ''
-  form.value.shippingDistrict = order?.shipping_district || ''
-  form.value.shippingCity = order?.shipping_city || ''
-  form.value.shippingCountry = order?.shipping_country || 'Vietnam'
-
-  form.value.paymentMethod = order?.payment_method || form.value.paymentMethod
-  form.value.notes = order?.notes || form.value.notes
-
-  isHydrating.value = false
+/** ✅ PUT /orders/checkout/{order_id} (checkoutOrder: pending -> processing) */
+async function checkoutOrder(oid) {
+  const res = await fetch(`${API_BASE}/api/orders/checkout/${oid}`, {
+    method: 'PUT',
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Checkout failed (${res.status})`)
+  return json
 }
 
 async function loadCheckout() {
@@ -428,21 +452,18 @@ async function loadCheckout() {
       price: Number(it.price) || 0,
       quantity: Number(it.quantity) || 1,
 
-      // ✅ dùng main_image bạn đã trả
       image: it.main_image || it.image || it.image_url || '',
     }))
 
     if (cartItems.value.length === 0) return
 
-    // lấy order_id từ item đầu tiên
     orderId.value = cartItems.value[0].order_id
 
-    // 1) apply default address vào order
+    // Apply default address vào order rồi load order để đổ form
     await applyAddressToOrder(orderId.value)
 
-    // 2) fetch order để đổ địa chỉ lên form
     const orderJson = await getOrderById(orderId.value)
-    const order = pickOrderFromResponse(orderJson)
+    const order = extractOrder(orderJson)
     if (order) hydrateFormFromOrder(order)
   } catch (e) {
     console.error(e)
@@ -453,60 +474,30 @@ async function loadCheckout() {
   }
 }
 
-/** ===== Auto save address when user changes fields (debounce) ===== */
-const isHydrating = ref(false)
-let saveTimer = null
-
-function scheduleSaveAddress() {
-  if (!orderId.value) return
-  if (isHydrating.value) return
-
-  clearTimeout(saveTimer)
-  saveTimer = setTimeout(async () => {
-    try {
-      await postAddressOrder(orderId.value)
-
-      // nếu bạn muốn luôn refresh lại order sau khi lưu:
-      // const orderJson = await getOrderById(orderId.value)
-      // const order = pickOrderFromResponse(orderJson)
-      // if (order) hydrateFormFromOrder(order)
-    } catch (e) {
-      console.error(e)
-      alert(e.message || 'Không thể lưu địa chỉ')
-    }
-  }, 600)
-}
-
-watch(
-  () => [
-    form.value.shippingAddress,
-    form.value.shippingWard,
-    form.value.shippingDistrict,
-    form.value.shippingCity,
-    form.value.shippingCountry,
-  ],
-  () => scheduleSaveAddress()
-)
-
 async function placeOrder() {
   if (!orderId.value) return
 
   // validate tối thiểu
-  if (!form.value.shippingAddress || !form.value.shippingCity) {
-    alert('Vui lòng điền đầy đủ thông tin giao hàng (ít nhất: Địa chỉ, Thành phố/Tỉnh).')
+  if (!form.value.shippingAddress?.trim() || !form.value.shippingCity?.trim()) {
+    alert('Vui lòng điền đầy đủ thông tin giao hàng (Địa chỉ, Thành phố/Tỉnh).')
     return
   }
 
   placing.value = true
   try {
-    // đảm bảo lưu địa chỉ mới nhất trước khi đặt
-    await postAddressOrder(orderId.value)
+    // (1) nếu bạn có API lưu địa chỉ: chỉ lưu khi bấm đặt hàng
+    // Nếu backend bạn đã đổi route POST này, hãy sửa URL trong saveAddressToOrder() cho đúng.
+    await saveAddressToOrder(orderId.value)
 
-    // TODO: nếu bạn có endpoint “finalize/pay/confirm order” thì gọi ở đây.
-    // Ví dụ: await fetch(`${API_BASE}/api/orders/confirm/${orderId.value}`, ...)
+    // (2) update tổng tiền (thêm shipping_fee)
+    await updateOrderTotalPrice(orderId.value, shippingCost.value)
 
-    alert('Đã lưu thông tin đơn hàng. (Bạn có thể nối thêm API xác nhận/ thanh toán ở bước này)')
-    router.push('/') // hoặc push sang trang success
+    // (3) checkout -> status pending => processing
+    await checkoutOrder(orderId.value)
+
+    // ✅ KHÔNG POPUP THÀNH CÔNG
+    // chuyển trang luôn (tuỳ bạn đổi sang /success)
+    router.push('/')
   } catch (e) {
     console.error(e)
     alert(e.message || 'Không thể đặt hàng')

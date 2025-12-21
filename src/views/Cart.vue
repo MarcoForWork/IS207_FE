@@ -209,6 +209,40 @@ function getLoggedInUserId() {
   return null
 }
 
+async function applyAddressToOrderApi(orderId) {
+  const res = await fetch(`${API_BASE}/api/orders/apply-address/${orderId}`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/json',
+    },
+  })
+
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const msg = json?.message || `Apply address failed (${res.status})`
+    throw new Error(msg)
+  }
+  return json
+}
+
+async function getOrderByIdApi(orderId) {
+  const res = await fetch(`${API_BASE}/api/orders/${orderId}`, {
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/json',
+    },
+  })
+
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const msg = json?.message || `Get order failed (${res.status})`
+    throw new Error(msg)
+  }
+  return json
+}
+
+
 async function updateCartItemQuantityApi(itemId, quantity) {
   const res = await fetch(`${API_BASE}/api/orders/update-cart/${itemId}`, {
     method: 'PUT',
@@ -278,6 +312,23 @@ async function loadCart() {
       // nếu backend không trả stock thì set tạm lớn để không bị block nút +
       stock: Number(it.stock ?? 99),
     }))
+    // ✅ sau khi load cart xong -> có order_id -> apply address vào order
+    if (cartItems.value.length > 0) {
+      const oid = cartItems.value[0].order_id
+
+      try {
+        await applyAddressToOrderApi(oid)
+
+        // nếu bạn muốn verify / lấy lại order (để dùng ở checkout hoặc debug)
+        // const orderJson = await getOrderByIdApi(oid)
+        // console.log('Order after apply address:', orderJson)
+      } catch (e) {
+        console.error(e)
+        // không bắt buộc phải alert, vì cart vẫn dùng được
+        // alert(e.message || 'Không thể apply address cho order')
+      }
+    }
+
   } catch (err) {
     console.error('Error loading cart:', err)
     cartItems.value = []
