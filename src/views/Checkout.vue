@@ -2,13 +2,18 @@
   <div>
     <Header />
     <Navbar />
+
     <main class="checkout-page">
       <div class="checkout-container">
         <div class="checkout-header">
           <h1 class="checkout-title">Thanh Toán</h1>
         </div>
 
-        <div v-if="cartItems.length === 0" class="empty-cart">
+        <div v-if="loading" class="empty-cart">
+          <p class="empty-message">Đang tải dữ liệu...</p>
+        </div>
+
+        <div v-else-if="cartItems.length === 0" class="empty-cart">
           <svg
             width="120"
             height="120"
@@ -26,7 +31,7 @@
         </div>
 
         <div v-else class="checkout-content">
-          <!-- Left: Order Summary -->
+          <!-- Left -->
           <div class="checkout-main">
             <!-- Shipping Info -->
             <section class="checkout-section">
@@ -34,6 +39,7 @@
                 <span class="section-number">1</span>
                 Thông Tin Giao Hàng
               </h2>
+
               <div class="section-content">
                 <div class="form-group">
                   <label for="address">Địa Chỉ</label>
@@ -45,6 +51,7 @@
                     class="form-input"
                   />
                 </div>
+
                 <div class="form-group">
                   <label for="ward">Phường/Xã</label>
                   <input
@@ -55,6 +62,7 @@
                     class="form-input"
                   />
                 </div>
+
                 <div class="form-row">
                   <div class="form-group">
                     <label for="district">Quận/Huyện</label>
@@ -66,6 +74,7 @@
                       class="form-input"
                     />
                   </div>
+
                   <div class="form-group">
                     <label for="city">Thành Phố/Tỉnh</label>
                     <input
@@ -77,6 +86,7 @@
                     />
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="country">Quốc Gia</label>
                   <input
@@ -87,6 +97,10 @@
                     class="form-input"
                   />
                 </div>
+
+                <p v-if="savingAddress" style="margin: 6px 0 0; color: #7c6f64; font-size: 0.9rem">
+                  Đang lưu địa chỉ...
+                </p>
               </div>
             </section>
 
@@ -96,6 +110,7 @@
                 <span class="section-number">2</span>
                 Phương Thức Giao Hàng
               </h2>
+
               <div class="section-content">
                 <div class="shipping-options">
                   <label class="shipping-option" v-for="option in shippingMethods" :key="option.id">
@@ -121,15 +136,11 @@
                 <span class="section-number">3</span>
                 Phương Thức Thanh Toán
               </h2>
+
               <div class="section-content">
                 <div class="payment-options">
                   <label class="payment-option" v-for="option in paymentMethods" :key="option.id">
-                    <input
-                      type="radio"
-                      :value="option.id"
-                      v-model="form.paymentMethod"
-                      name="payment"
-                    />
+                    <input type="radio" :value="option.id" v-model="form.paymentMethod" name="payment" />
                     <div class="option-content">
                       <span class="option-title">{{ option.name }}</span>
                       <span class="option-desc">{{ option.description }}</span>
@@ -139,12 +150,13 @@
               </div>
             </section>
 
-            <!-- Order Notes -->
+            <!-- Notes -->
             <section class="checkout-section">
               <h2 class="section-title">
                 <span class="section-number">4</span>
                 Ghi Chú Đơn Hàng
               </h2>
+
               <div class="section-content">
                 <textarea
                   v-model="form.notes"
@@ -155,7 +167,7 @@
             </section>
           </div>
 
-          <!-- Right: Order Summary -->
+          <!-- Right -->
           <aside class="checkout-summary">
             <div class="summary-card">
               <h3 class="summary-title">Tóm Tắt Đơn Hàng</h3>
@@ -164,7 +176,12 @@
                 <div v-for="item in cartItems" :key="item.id" class="summary-item">
                   <div class="summary-item-info">
                     <p class="summary-item-name">{{ item.name }}</p>
-                    <p class="summary-item-qty">x{{ item.quantity }}</p>
+                    <p class="summary-item-qty">
+                      x{{ item.quantity }}
+                      <span v-if="item.color_name || item.size_name" style="opacity: 0.85">
+                        • {{ item.color_name }} {{ item.size_name ? '• ' + item.size_name : '' }}
+                      </span>
+                    </p>
                   </div>
                   <p class="summary-item-price">{{ formatPrice(item.price * item.quantity) }}</p>
                 </div>
@@ -187,8 +204,8 @@
                 <span>{{ formatPrice(total) }}</span>
               </div>
 
-              <button class="checkout-btn" @click="placeOrder">
-                <span>Đặt Hàng</span>
+              <button class="checkout-btn" @click="placeOrder" :disabled="placing">
+                <span>{{ placing ? 'Đang xử lý...' : 'Đặt Hàng' }}</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" fill="none" />
                 </svg>
@@ -205,10 +222,20 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
+import { getAuthHeaders } from '@/config/api'
+
+const router = useRouter()
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '')
+
+const loading = ref(true)
+const placing = ref(false)
+const savingAddress = ref(false)
 
 const cartItems = ref([])
+const orderId = ref(null)
 
 const form = ref({
   shippingAddress: '',
@@ -216,6 +243,8 @@ const form = ref({
   shippingDistrict: '',
   shippingCity: '',
   shippingCountry: 'Vietnam',
+
+  shippingMethod: 1,
   paymentMethod: 'cod',
   notes: '',
 })
@@ -232,9 +261,7 @@ const paymentMethods = ref([
   { id: 'card', name: 'Thẻ Tín Dụng/Ghi Nợ', description: 'Visa, Mastercard, v.v.' },
 ])
 
-const subtotal = computed(() => {
-  return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-})
+const subtotal = computed(() => cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0))
 
 const shippingCost = computed(() => {
   const method = shippingMethods.value.find((m) => m.id === form.value.shippingMethod)
@@ -244,77 +271,243 @@ const shippingCost = computed(() => {
 const total = computed(() => subtotal.value + shippingCost.value)
 
 function formatPrice(price) {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(price) || 0)
 }
 
-function loadCartItems() {
-  const stored = JSON.parse(localStorage.getItem('cart') || '[]')
-  // Group items by ID and count quantities
-  const grouped = {}
-  stored.forEach((item) => {
-    if (!grouped[item.id]) {
-      grouped[item.id] = {
-        ...item,
-        quantity: 1,
-        image: item.main_image || item.image,
-        price: item.final_price || item.base_price || 0,
-        color_name: item.colors?.[0]?.color_name || 'N/A',
-        size_name: item.sizes?.[0]?.size_name || 'N/A',
-      }
-    } else {
-      grouped[item.id].quantity += 1
-    }
+function getLoggedInUserId() {
+  const tryKeys = ['user', 'auth_user', 'currentUser', 'me']
+  for (const k of tryKeys) {
+    const raw = localStorage.getItem(k)
+    if (!raw) continue
+    try {
+      const obj = JSON.parse(raw)
+      if (obj?.id) return Number(obj.id)
+      if (obj?.user?.id) return Number(obj.user.id)
+    } catch (_) {}
+  }
+  const uid = localStorage.getItem('user_id')
+  if (uid) return Number(uid)
+  return null
+}
+
+function extractOrder(json) {
+  return json?.data || json?.order || json || null
+}
+
+function hydrateFormFromOrder(order) {
+  form.value.shippingAddress =
+    order?.shipping_address_line || order?.address_line || order?.address || order?.shipping_address || ''
+  form.value.shippingWard = order?.shipping_ward || order?.ward || ''
+  form.value.shippingDistrict = order?.shipping_district || order?.district || ''
+  form.value.shippingCity = order?.shipping_city || order?.city || ''
+  form.value.shippingCountry = order?.shipping_country || order?.country || 'Vietnam'
+}
+
+/** helper parse JSON an toàn (vì update-total có thể không trả json) */
+async function safeReadJson(res) {
+  const text = await res.text().catch(() => '')
+  if (!text) return {}
+  try {
+    return JSON.parse(text)
+  } catch {
+    return { raw: text }
+  }
+}
+
+async function fetchCart(userId) {
+  const res = await fetch(`${API_BASE}/api/cart/${userId}`, {
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
   })
-  cartItems.value = Object.values(grouped)
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Load cart failed (${res.status})`)
+  return json
 }
 
-function placeOrder() {
-  // Validate form
-  if (!form.value.shippingAddress || !form.value.shippingCity) {
-    alert('Vui lòng điền đầy đủ thông tin giao hàng')
+async function applyAddressToOrder(oid) {
+  const res = await fetch(`${API_BASE}/api/orders/apply-address/${oid}`, {
+    method: 'POST',
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Apply address failed (${res.status})`)
+  return json
+}
+
+async function getOrderById(oid) {
+  const res = await fetch(`${API_BASE}/api/orders/${oid}`, {
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Get order failed (${res.status})`)
+  return json
+}
+
+/**
+ * (TUỲ BACKEND CỦA BẠN)
+ * Nếu bạn vẫn có endpoint lưu địa chỉ như trước (body: address_line, ward, district, city)
+ * thì giữ hàm này và gọi khi bấm Đặt Hàng.
+ *
+ * ⚠️ LƯU Ý QUAN TRỌNG:
+ * - Bạn vừa đổi PUT /orders/checkout/{id} => checkoutOrder (set status processing)
+ * => ĐỪNG dùng PUT /checkout/{id} để lưu địa chỉ nữa.
+ * - Nếu bạn vẫn muốn lưu địa chỉ, hãy tạo route riêng ví dụ:
+ *   POST /orders/update-address/{id}
+ * rồi thay URL ở dưới cho đúng.
+ */
+async function saveAddressToOrder(oid) {
+  savingAddress.value = true
+  try {
+    const payload = {
+      address_line: form.value.shippingAddress,
+      ward: form.value.shippingWard,
+      district: form.value.shippingDistrict,
+      city: form.value.shippingCity,
+    }
+
+    // ✅ Hãy đổi URL này theo route lưu địa chỉ thực tế của bạn
+    const res = await fetch(`${API_BASE}/api/orders/update_address/${oid}`, {
+      method: 'PUT', // giữ POST để không đụng PUT checkoutOrder
+      headers: {
+        ...getAuthHeaders(),
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const json = await safeReadJson(res)
+    if (!res.ok) {
+      const firstErr =
+        json?.errors && typeof json.errors === 'object'
+          ? Object.values(json.errors)?.flat()?.[0]
+          : null
+      throw new Error(firstErr || json?.message || `Save address failed (${res.status})`)
+    }
+    return json
+  } finally {
+    savingAddress.value = false
+  }
+}
+
+/** ✅ PUT /orders/update-total/{order_id}  body: { shipping_fee } */
+async function updateOrderTotalPrice(oid, shippingFee) {
+  const res = await fetch(`${API_BASE}/api/orders/update-total/${oid}`, {
+    method: 'PUT',
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ shipping_fee: Number(shippingFee) || 0 }),
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) {
+    const firstErr =
+      json?.errors && typeof json.errors === 'object'
+        ? Object.values(json.errors)?.flat()?.[0]
+        : null
+    throw new Error(firstErr || json?.message || `Update total failed (${res.status})`)
+  }
+  return json
+}
+
+/** ✅ PUT /orders/checkout/{order_id} (checkoutOrder: pending -> processing) */
+async function checkoutOrder(oid) {
+  const res = await fetch(`${API_BASE}/api/orders/checkout/${oid}`, {
+    method: 'PUT',
+    headers: { ...getAuthHeaders(), Accept: 'application/json' },
+  })
+  const json = await safeReadJson(res)
+  if (!res.ok) throw new Error(json?.message || `Checkout failed (${res.status})`)
+  return json
+}
+
+async function loadCheckout() {
+  loading.value = true
+  try {
+    const userId = getLoggedInUserId()
+    if (!userId) {
+      cartItems.value = []
+      alert('Bạn cần đăng nhập để thanh toán.')
+      return
+    }
+
+    const cartJson = await fetchCart(userId)
+    const items = Array.isArray(cartJson?.data) ? cartJson.data : []
+
+    cartItems.value = items.map((it) => ({
+      id: it.id, // order_item_id
+      order_id: it.order_id,
+      variant_id: it.variant_id,
+      product_id: it.product_id,
+      name: it.name,
+
+      color_id: it.color_id,
+      color_name: it.color_name,
+      color_code: it.color_code,
+
+      size_id: it.size_id,
+      size_name: it.size_name,
+
+      price: Number(it.price) || 0,
+      quantity: Number(it.quantity) || 1,
+
+      image: it.main_image || it.image || it.image_url || '',
+    }))
+
+    if (cartItems.value.length === 0) return
+
+    orderId.value = cartItems.value[0].order_id
+
+    // Apply default address vào order rồi load order để đổ form
+    await applyAddressToOrder(orderId.value)
+
+    const orderJson = await getOrderById(orderId.value)
+    const order = extractOrder(orderJson)
+    if (order) hydrateFormFromOrder(order)
+  } catch (e) {
+    console.error(e)
+    cartItems.value = []
+    alert(e.message || 'Không thể tải trang thanh toán')
+  } finally {
+    loading.value = false
+  }
+}
+
+async function placeOrder() {
+  if (!orderId.value) return
+
+  // validate tối thiểu
+  if (!form.value.shippingAddress?.trim() || !form.value.shippingCity?.trim()) {
+    alert('Vui lòng điền đầy đủ thông tin giao hàng (Địa chỉ, Thành phố/Tỉnh).')
     return
   }
 
-  // Get current user from localStorage (assumes user is logged in)
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-  const userId = user.id || null
+  placing.value = true
+  try {
+    // (1) nếu bạn có API lưu địa chỉ: chỉ lưu khi bấm đặt hàng
+    // Nếu backend bạn đã đổi route POST này, hãy sửa URL trong saveAddressToOrder() cho đúng.
+    await saveAddressToOrder(orderId.value)
 
-  // Create order object matching database schema
-  const order = {
-    user_id: userId,
-    total_price: total.value,
-    status: 'pending',
-    shipping_address_line: form.value.shippingAddress,
-    shipping_ward: form.value.shippingWard,
-    shipping_district: form.value.shippingDistrict,
-    shipping_city: form.value.shippingCity,
-    shipping_country: form.value.shippingCountry,
-    payment_method: form.value.paymentMethod,
-    notes: form.value.notes,
-    created_at: new Date().toISOString(),
-    // Order items matching order_items table
-    order_items: cartItems.value.map((item) => ({
-      variant_id: item.id, // or actual variant_id if available
-      quantity: item.quantity,
-      price: item.price,
-    })),
+    // (2) update tổng tiền (thêm shipping_fee)
+    await updateOrderTotalPrice(orderId.value, shippingCost.value)
+
+    // (3) checkout -> status pending => processing
+    await checkoutOrder(orderId.value)
+
+    // ✅ KHÔNG POPUP THÀNH CÔNG
+    // chuyển trang luôn (tuỳ bạn đổi sang /success)
+    router.push('/')
+  } catch (e) {
+    console.error(e)
+    alert(e.message || 'Không thể đặt hàng')
+  } finally {
+    placing.value = false
   }
-
-  // Save order to localStorage
-  const orders = JSON.parse(localStorage.getItem('orders') || '[]')
-  orders.push(order)
-  localStorage.setItem('orders', JSON.stringify(orders))
-
-  // Clear cart
-  localStorage.removeItem('cart')
-
-  // Show success and redirect
-  alert('Đơn hàng đã được tạo thành công!')
-  window.location.href = '/'
 }
 
 onMounted(() => {
-  loadCartItems()
+  loadCheckout()
 })
 </script>
 
@@ -503,11 +696,6 @@ onMounted(() => {
   accent-color: #000000;
 }
 
-.shipping-option input[type='radio']:checked + .option-content,
-.payment-option input[type='radio']:checked + .option-content {
-  color: #000000;
-}
-
 .option-content {
   display: flex;
   flex-direction: column;
@@ -647,9 +835,9 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.checkout-btn svg {
-  width: 16px;
-  height: 16px;
+.checkout-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .back-to-cart {
