@@ -2,7 +2,7 @@
   <nav class="navbar">
     <!-- Left: Logo -->
     <div class="navbar-brand">
-      <router-link to="/" class="logo">Lmaohihi</router-link>
+      <router-link to="/" class="logo">IS207</router-link>
     </div>
 
     <!-- Center: Menu Items -->

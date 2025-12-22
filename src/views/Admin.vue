@@ -22,7 +22,7 @@
           :class="{ active: activeTab === item.id }"
           @click="selectTab(item.id)"
         >
-          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-icon" v-html="getIcon(item.icon)"></span>
           <span class="nav-label">{{ item.label }}</span>
           <span v-if="item.badge" class="nav-badge">{{ item.badge }}</span>
         </button>
@@ -30,7 +30,7 @@
         <div class="nav-divider"></div>
 
         <button class="nav-item danger" @click="handleLogout">
-          <span class="nav-icon">↩</span>
+          <span class="nav-icon" v-html="getIcon('logout')"></span>
           <span class="nav-label">Logout</span>
         </button>
       </nav>
@@ -40,7 +40,12 @@
     <div class="main">
       <!-- TOPBAR -->
       <header class="topbar">
-        <button class="hamburger" @click="sidebarOpen = true" aria-label="Open sidebar">☰</button>
+        <button
+          class="hamburger"
+          @click="sidebarOpen = true"
+          aria-label="Open sidebar"
+          v-html="getIcon('menu')"
+        ></button>
 
         <div class="topbar-title">
           <h1 class="page-title">Dashboard</h1>
@@ -48,8 +53,8 @@
         </div>
 
         <div class="topbar-right">
-          <button class="icon-btn" title="Theme">☾</button>
-          <button class="icon-btn" title="Settings">⚙</button>
+          <button class="icon-btn" title="Theme" v-html="getIcon('theme')"></button>
+          <button class="icon-btn" title="Settings" v-html="getIcon('settings')"></button>
 
           <div class="profile">
             <div class="profile-text">
@@ -122,17 +127,17 @@ const componentMap = {
 
 /* sidebar menu (giống bố cục dashboard trắng) */
 const menu = [
-  { id: 'analytics', label: 'Analytics', icon: '📈' }, // NEW
-  { id: 'customers', label: 'Customers', icon: '👤' }, // NEW
-  { id: 'categories', label: 'Categories', icon: '▦' },
-  { id: 'collections', label: 'Collections', icon: '⧉' },
-  { id: 'products', label: 'Products', icon: '▣' },
-  { id: 'product-images', label: 'Product Images', icon: '🖼' },
-  { id: 'discounts', label: 'Discounts', icon: '％' },
-  { id: 'colors', label: 'Colors', icon: '🎨' },
-  { id: 'faqs', label: 'FAQs', icon: '?' },
-  { id: 'highlights', label: 'Highlights', icon: '★' },
-  { id: 'orders', label: 'Orders', icon: '🧾' },
+  { id: 'analytics', label: 'Analytics', icon: 'analytics' },
+  { id: 'customers', label: 'Customers', icon: 'customers' },
+  { id: 'categories', label: 'Categories', icon: 'categories' },
+  { id: 'collections', label: 'Collections', icon: 'collections' },
+  { id: 'products', label: 'Products', icon: 'products' },
+  { id: 'product-images', label: 'Product Images', icon: 'images' },
+  { id: 'discounts', label: 'Discounts', icon: 'discounts' },
+  { id: 'colors', label: 'Colors', icon: 'colors' },
+  { id: 'faqs', label: 'FAQs', icon: 'faqs' },
+  { id: 'highlights', label: 'Highlights', icon: 'highlights' },
+  { id: 'orders', label: 'Orders', icon: 'orders' },
 ]
 
 const currentLabel = computed(() => {
@@ -150,6 +155,40 @@ const adminName = computed(() => {
 })
 
 const adminInitial = computed(() => (adminName.value?.trim()?.[0] || 'A').toUpperCase())
+
+function getIcon(name) {
+  const icons = {
+    analytics:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 20V10M12 20V4M6 20V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    customers:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.59 22C20.59 18.13 16.74 15 12 15C7.26 15 3.41 18.13 3.41 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    categories:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H9V9H4V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 4H20V9H15V4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15H9V20H4V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 15H20V20H15V15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    collections:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7H21M3 12H21M3 17H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    products:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    images:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 15L16 10L5 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    discounts:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.59 13.41L13.42 20.58C13.2343 20.766 13.0137 20.9135 12.7709 21.0141C12.5281 21.1148 12.2678 21.1666 12.005 21.1666C11.7422 21.1666 11.4819 21.1148 11.2391 21.0141C10.9963 20.9135 10.7757 20.766 10.59 20.58L2 12V2H12L20.59 10.59C20.9625 10.9647 21.1716 11.4716 21.1716 12C21.1716 12.5284 20.9625 13.0353 20.59 13.41Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    colors:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C12.55 22 13 21.55 13 21V20.5C13 20.11 12.86 19.74 12.63 19.47C12.4 19.2 12.28 18.85 12.28 18.47C12.28 17.92 12.73 17.47 13.28 17.47H15C18.31 17.47 21 14.78 21 11.47C21 6.20001 16.52 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1.5" fill="currentColor"/></svg>',
+    faqs: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 17H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    highlights:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    orders:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    logout:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    menu: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    theme:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79C20.8427 14.4922 20.2039 16.1144 19.1582 17.4668C18.1126 18.8192 16.7035 19.8458 15.0957 20.4265C13.4879 21.0073 11.748 21.1181 10.0795 20.7461C8.41104 20.3741 6.8846 19.5345 5.67413 18.3241C4.46367 17.1136 3.62405 15.5872 3.25204 13.9187C2.88003 12.2502 2.99078 10.5103 3.57153 8.9025C4.15228 7.29473 5.17887 5.88564 6.53126 4.83999C7.88365 3.79434 9.50578 3.15539 11.208 2.99799C10.2846 4.38531 9.89509 6.06335 10.1153 7.71959C10.3355 9.37583 11.1532 10.8975 12.4139 11.9864C13.6747 13.0753 15.2884 13.6552 16.9501 13.6201C18.6117 13.585 20.2002 12.9372 21.416 11.7999L21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    settings:
+      '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 1V3M12 21V23M4.22 4.22L5.64 5.64M18.36 18.36L19.78 19.78M1 12H3M21 12H23M4.22 19.78L5.64 18.36M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  }
+  return icons[name] || ''
+}
 
 function selectTab(id) {
   activeTab.value = id
@@ -282,10 +321,18 @@ function handleLogout() {
 }
 
 .nav-icon {
-  width: 22px;
+  width: 20px;
+  height: 20px;
   display: inline-flex;
   justify-content: center;
-  opacity: 0.9;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .nav-label {
@@ -336,7 +383,13 @@ function handleLogout() {
   width: 42px;
   height: 42px;
   cursor: pointer;
-  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger svg {
+  width: 20px;
+  height: 20px;
 }
 
 .topbar-title {
@@ -372,6 +425,14 @@ function handleLogout() {
   width: 42px;
   height: 42px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .icon-btn:hover {
@@ -454,8 +515,7 @@ function handleLogout() {
 
 @media (max-width: 980px) {
   .hamburger {
-    display: inline-grid;
-    place-items: center;
+    display: flex;
   }
 
   .sidebar {

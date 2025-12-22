@@ -27,11 +27,11 @@
         <div class="form-row">
           <div class="form-group">
             <label>Start Date</label>
-            <input v-model="discountForm.start_date" type="datetime-local" required />
+            <input v-model="discountForm.start_date" type="date" required />
           </div>
           <div class="form-group">
             <label>End Date</label>
-            <input v-model="discountForm.end_date" type="datetime-local" required />
+            <input v-model="discountForm.end_date" type="date" required />
           </div>
         </div>
         <div class="form-actions">
@@ -55,10 +55,18 @@ const discountForm = ref({
 
 const createDiscount = async () => {
   try {
+    // Convert date to datetime format: start_date at 00:00:00, end_date at 23:59:59
+    const payload = {
+      product_id: discountForm.value.product_id,
+      discount_percentage: discountForm.value.discount_percentage,
+      start_date: `${discountForm.value.start_date}T00:00:00`,
+      end_date: `${discountForm.value.end_date}T23:59:59`,
+    }
+
     const response = await fetch(buildUrl(API_ENDPOINTS.ADMIN.PRODUCT_DISCOUNTS.CREATE), {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(discountForm.value),
+      body: JSON.stringify(payload),
     })
 
     if (response.ok) {

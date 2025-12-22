@@ -9,12 +9,12 @@
 
       <div class="hero-content-overlay">
         <h1 class="main-title">
-          Lorem Ipsum
+          Phong Cách Tạo Nên Bản Sắc
           <br />
-          Lorem Ipsum
+          Chất liệu cao cấp • Form chuẩn • Dễ phối đồ
         </h1>
 
-        <a href="/products" class="cta-button"> Lorem Ipsum </a>
+        <a href="/products" class="cta-button"> Khám phá ngay </a>
       </div>
     </div>
   </div>
