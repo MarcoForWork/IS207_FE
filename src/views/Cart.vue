@@ -7,7 +7,9 @@
       <div class="cart-container">
         <div class="cart-header">
           <h1 class="cart-title">Giỏ Hàng</h1>
-          <span v-if="cartItems.length > 0" class="item-count">{{ cartItems.length }} sản phẩm</span>
+          <span v-if="cartItems.length > 0" class="item-count"
+            >{{ cartItems.length }} sản phẩm</span
+          >
         </div>
 
         <!-- Empty Cart State -->
@@ -333,7 +335,6 @@ async function removeItem(orderItemId) {
   }
 }
 
-
 async function applyDiscount() {
   if (!discountCode.value.trim()) return
 
@@ -367,7 +368,7 @@ onMounted(() => {
 }
 
 .cart-page {
-  background-color: #fbf1c7;
+  background-color: #ffffff;
   min-height: calc(100vh - 200px);
   padding: 3rem 0;
 }
@@ -384,13 +385,13 @@ onMounted(() => {
   align-items: center;
   margin-bottom: 2.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 2px solid #d79921;
+  border-bottom: 2px solid #000000;
 }
 
 .cart-title {
   font-size: 2.25rem;
   font-weight: 700;
-  color: #3c3836;
+  color: #000000;
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -398,11 +399,11 @@ onMounted(() => {
 .item-count {
   font-size: 1rem;
   font-weight: 500;
-  color: #665c54;
-  background-color: #f9f5d7;
+  color: #000000;
+  background-color: #f5f5f5;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
 }
 
 /* Empty Cart */
@@ -412,36 +413,38 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(60, 56, 54, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
 }
 
 .empty-cart svg {
-  color: #d79921;
+  color: #000000;
   margin-bottom: 1.5rem;
 }
 
 .empty-message {
   font-size: 1.25rem;
-  color: #3c3836;
+  color: #000000;
   margin-bottom: 2rem;
 }
 
 .continue-shopping-btn {
   padding: 0.875rem 2rem;
-  background-color: #d79921;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .continue-shopping-btn:hover {
-  background-color: #b47c1a;
+  background-color: #333333;
+  transform: translateY(-1px);
 }
 
 /* Cart Content */
@@ -454,11 +457,11 @@ onMounted(() => {
 
 /* Cart Items */
 .cart-items {
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(60, 56, 54, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
 }
 
 .cart-items-header {
@@ -466,8 +469,8 @@ onMounted(() => {
   grid-template-columns: 2fr 1fr 1.2fr 1fr 60px;
   gap: 1.5rem;
   padding: 1.25rem 1.5rem;
-  background: linear-gradient(135deg, #3c3836 0%, #504945 100%);
-  color: #fbf1c7;
+  background: #000000;
+  color: #ffffff;
   font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -494,13 +497,13 @@ onMounted(() => {
   grid-template-columns: 2fr 1fr 1.2fr 1fr 60px;
   gap: 1.5rem;
   padding: 1.5rem;
-  border-bottom: 1px solid #f4e8d0;
+  border-bottom: 1px solid #e0e0e0;
   align-items: center;
   transition: background-color 0.2s ease;
 }
 
 .cart-item:hover {
-  background-color: #fef8ed;
+  background-color: #f5f5f5;
 }
 
 .cart-item:last-child {
@@ -518,8 +521,8 @@ onMounted(() => {
   height: 90px;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #f9f5d7;
-  border: 1px solid #ebdbb2;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
   flex-shrink: 0;
 }
 
@@ -543,7 +546,7 @@ onMounted(() => {
 .item-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #3c3836;
+  color: #000000;
   margin: 0;
   line-height: 1.4;
 }
@@ -559,11 +562,11 @@ onMounted(() => {
   align-items: center;
   gap: 0.375rem;
   font-size: 0.8125rem;
-  color: #665c54;
-  background-color: #f9f5d7;
+  color: #000000;
+  background-color: #f5f5f5;
   padding: 0.25rem 0.625rem;
   border-radius: 4px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   font-weight: 500;
 }
 
@@ -580,7 +583,7 @@ onMounted(() => {
 .price-value {
   font-size: 1.0625rem;
   font-weight: 600;
-  color: #3c3836;
+  color: #000000;
   margin: 0;
 }
 
@@ -599,7 +602,7 @@ onMounted(() => {
 .total-value {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #d79921;
+  color: #000000;
   margin: 0;
 }
 
@@ -612,9 +615,9 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 6px;
-  border: 1px solid #d5c4a1;
+  border: 1px solid #e0e0e0;
   overflow: hidden;
 }
 
@@ -626,13 +629,13 @@ onMounted(() => {
   justify-content: center;
   background-color: transparent;
   border: none;
-  color: #3c3836;
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .qty-btn:hover:not(:disabled) {
-  background-color: #d79921;
+  background-color: #000000;
   color: white;
 }
 
@@ -646,19 +649,19 @@ onMounted(() => {
   height: 36px;
   text-align: center;
   border: none;
-  border-left: 1px solid #ebdbb2;
-  border-right: 1px solid #ebdbb2;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #3c3836;
-  background-color: #fef8ed;
+  color: #000000;
+  background-color: #f5f5f5;
   appearance: textfield;
   -moz-appearance: textfield;
 }
 
 .qty-input:focus {
   outline: none;
-  background-color: #f9f5d7;
+  background-color: #e0e0e0;
 }
 
 .qty-input::-webkit-inner-spin-button,
@@ -669,8 +672,8 @@ onMounted(() => {
 
 .remove-btn {
   background-color: transparent;
-  border: 1px solid #ebdbb2;
-  color: #928374;
+  border: 1px solid #e0e0e0;
+  color: #808080;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 6px;
@@ -681,9 +684,9 @@ onMounted(() => {
 }
 
 .remove-btn:hover {
-  background-color: #cc241d;
+  background-color: #000000;
   color: white;
-  border-color: #cc241d;
+  border-color: #000000;
   transform: scale(1.05);
 }
 
@@ -691,20 +694,20 @@ onMounted(() => {
 .order-summary {
   position: sticky;
   top: 2rem;
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(60, 56, 54, 0.08);
-  border: 1px solid #ebdbb2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
   padding: 2rem;
 }
 
 .summary-title {
   font-size: 1.375rem;
   font-weight: 700;
-  color: #3c3836;
+  color: #000000;
   margin: 0 0 1.75rem 0;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #f4e8d0;
+  border-bottom: 2px solid #e0e0e0;
   letter-spacing: -0.025em;
 }
 
@@ -714,7 +717,7 @@ onMounted(() => {
   align-items: center;
   padding: 0.875rem 0;
   font-size: 0.9375rem;
-  color: #3c3836;
+  color: #000000;
 }
 
 .discount-section {
@@ -722,18 +725,18 @@ onMounted(() => {
   gap: 0.625rem;
   margin: 1.25rem 0;
   padding: 1.25rem;
-  background-color: #fef8ed;
+  background-color: #f5f5f5;
   border-radius: 8px;
-  border: 1px dashed #d5c4a1;
+  border: 1px dashed #e0e0e0;
 }
 
 .discount-input {
   flex: 1;
   padding: 0.875rem 1rem;
-  border: 1px solid #d5c4a1;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   font-size: 0.9375rem;
-  color: #3c3836;
+  color: #000000;
   background-color: white;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -741,17 +744,17 @@ onMounted(() => {
 
 .discount-input:focus {
   outline: none;
-  border-color: #d79921;
-  box-shadow: 0 0 0 3px rgba(215, 153, 33, 0.1);
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .discount-input::placeholder {
-  color: #928374;
+  color: #808080;
 }
 
 .apply-discount-btn {
   padding: 0.875rem 1.25rem;
-  background-color: #3c3836;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 6px;
@@ -763,13 +766,13 @@ onMounted(() => {
 }
 
 .apply-discount-btn:hover {
-  background-color: #282828;
+  background-color: #333333;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(60, 56, 54, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .discount-row {
-  color: #98971a;
+  color: #000000;
 }
 
 .discount-value {
@@ -778,7 +781,7 @@ onMounted(() => {
 
 .summary-divider {
   height: 2px;
-  background: linear-gradient(to right, transparent, #ebdbb2, transparent);
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
   margin: 1.25rem 0;
 }
 
@@ -789,14 +792,14 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fef8ed;
+  background-color: #f5f5f5;
   font-size: 1.1875rem;
   font-weight: 700;
 }
 
 .total-amount {
   font-size: 1.75rem;
-  color: #d79921;
+  color: #000000;
   font-weight: 800;
   letter-spacing: -0.025em;
 }
@@ -805,7 +808,7 @@ onMounted(() => {
   width: 100%;
   padding: 1.125rem;
   margin-top: 1.75rem;
-  background: linear-gradient(135deg, #d79921 0%, #b47c1a 100%);
+  background: #000000;
   color: white;
   border: none;
   border-radius: 8px;
@@ -815,12 +818,13 @@ onMounted(() => {
   transition: all 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 12px rgba(215, 153, 33, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .checkout-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(215, 153, 33, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  background: #333333;
 }
 
 .checkout-btn:active {
@@ -833,7 +837,7 @@ onMounted(() => {
   justify-content: center;
   gap: 0.5rem;
   margin-top: 1.25rem;
-  color: #665c54;
+  color: #808080;
   text-decoration: none;
   font-size: 0.9375rem;
   font-weight: 500;
@@ -841,7 +845,7 @@ onMounted(() => {
 }
 
 .continue-link:hover {
-  color: #3c3836;
+  color: #000000;
   gap: 0.75rem;
 }
 
@@ -896,21 +900,21 @@ onMounted(() => {
   .item-price::before {
     content: 'Đơn giá:';
     font-weight: 600;
-    color: #665c54;
+    color: #000000;
     font-size: 0.875rem;
   }
 
   .item-quantity::before {
     content: 'Số lượng:';
     font-weight: 600;
-    color: #665c54;
+    color: #000000;
     font-size: 0.875rem;
   }
 
   .item-total::before {
     content: 'Thành tiền:';
     font-weight: 600;
-    color: #665c54;
+    color: #000000;
     font-size: 0.875rem;
   }
 
@@ -929,7 +933,7 @@ onMounted(() => {
     justify-content: flex-end;
     margin-top: 0.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #f4e8d0;
+    border-top: 1px solid #e0e0e0;
   }
 
   .order-summary {
