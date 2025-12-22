@@ -86,9 +86,13 @@
             <div class="quantity-selector">
               <h3>Số lượng</h3>
               <div class="quantity-controls">
-                <button class="qty-btn" @click="decreaseQuantity" :disabled="quantity <= 1">-</button>
+                <button class="qty-btn" @click="decreaseQuantity" :disabled="quantity <= 1">
+                  -
+                </button>
                 <input type="number" v-model.number="quantity" min="1" max="99" class="qty-input" />
-                <button class="qty-btn" @click="increaseQuantity" :disabled="quantity >= 99">+</button>
+                <button class="qty-btn" @click="increaseQuantity" :disabled="quantity >= 99">
+                  +
+                </button>
               </div>
             </div>
 
@@ -101,50 +105,72 @@
 
             <!-- Accordions -->
             <div class="detail-block">
-              <button class="block-header" @click="openSections.highlights = !openSections.highlights">
+              <button
+                class="block-header"
+                @click="openSections.highlights = !openSections.highlights"
+              >
                 <span>Điểm nổi bật</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" :class="{ rotated: openSections.highlights }">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  :class="{ rotated: openSections.highlights }"
+                >
                   <path d="M7 10l5 5 5-5z" fill="currentColor" />
                 </svg>
               </button>
               <transition name="slide">
-              <div v-show="openSections.highlights" class="highlight-list">
-                <div v-for="item in highlights.slice(0, 4)" :key="item.id" class="highlight-item">
-                  <img class="highlight-img" :src="toAbsoluteUrl(item.image_url)" :alt="item.title" />
-                  <div class="highlight-text">
-                    <div class="highlight-title">{{ item.title }}</div>
-                    <div class="highlight-desc">{{ item.description }}</div>
+                <div v-show="openSections.highlights" class="highlight-list">
+                  <div v-for="item in highlights.slice(0, 4)" :key="item.id" class="highlight-item">
+                    <img
+                      class="highlight-img"
+                      :src="toAbsoluteUrl(item.image_url)"
+                      :alt="item.title"
+                    />
+                    <div class="highlight-text">
+                      <div class="highlight-title">{{ item.title }}</div>
+                      <div class="highlight-desc">{{ item.description }}</div>
+                    </div>
                   </div>
-                </div>
 
-                <div v-if="!highlights.length" class="empty-text">Chưa có điểm nổi bật.</div>
-              </div>
-            </transition>
+                  <div v-if="!highlights.length" class="empty-text">Chưa có điểm nổi bật.</div>
+                </div>
+              </transition>
             </div>
 
             <div class="detail-block">
               <button class="block-header" @click="openSections.care = !openSections.care">
                 <span>Câu hỏi thường gặp</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" :class="{ rotated: openSections.care }">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  :class="{ rotated: openSections.care }"
+                >
                   <path d="M7 10l5 5 5-5z" fill="currentColor" />
                 </svg>
               </button>
               <transition name="slide">
-              <div v-show="openSections.care" class="faq-list">
-                <div v-for="faq in faqs.slice(0, 4)" :key="faq.id" class="faq-item">
-                  <div class="faq-q">{{ faq.question }}</div>
-                  <div class="faq-a">{{ faq.answer }}</div>
-                </div>
+                <div v-show="openSections.care" class="faq-list">
+                  <div v-for="faq in faqs.slice(0, 4)" :key="faq.id" class="faq-item">
+                    <div class="faq-q">{{ faq.question }}</div>
+                    <div class="faq-a">{{ faq.answer }}</div>
+                  </div>
 
-                <div v-if="!faqs.length" class="empty-text">Chưa có câu hỏi thường gặp.</div>
-              </div>
-            </transition>
+                  <div v-if="!faqs.length" class="empty-text">Chưa có câu hỏi thường gặp.</div>
+                </div>
+              </transition>
             </div>
 
             <div class="detail-block">
               <button class="block-header" @click="openSections.shipping = !openSections.shipping">
                 <span>Giao hàng & đổi trả</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" :class="{ rotated: openSections.shipping }">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  :class="{ rotated: openSections.shipping }"
+                >
                   <path d="M7 10l5 5 5-5z" fill="currentColor" />
                 </svg>
               </button>
@@ -243,7 +269,7 @@ const faqs = ref([])
 
 const openSections = ref({
   highlights: false,
-  care: false,    // mục này sẽ đổi thành "Câu hỏi thường gặp"
+  care: false, // mục này sẽ đổi thành "Câu hỏi thường gặp"
   shipping: false,
   faqs: false,
 })
@@ -384,7 +410,6 @@ async function fetchProductDetails(id) {
 
     if (!fj) console.warn('Faqs API failed:', `${API_BASE}/api/products-faqs/${id}`)
 
-
     // 2) products-by-color (dùng để lấy ảnh cho product hiện tại + related)
     relatedLoading.value = true
     const cj = await fetchJson(`${API_BASE}/api/products-by-color/${id}`)
@@ -484,8 +509,8 @@ async function addToCart() {
 
   const payload = {
     user_id: userId,
-    color_id: selectedColor.value.id,     // ID trong bảng color
-    size_id: selectedSize.value.id,       // 1-5 theo thứ tự bạn set
+    color_id: selectedColor.value.id, // ID trong bảng color
+    size_id: selectedSize.value.id, // 1-5 theo thứ tự bạn set
     product_id: product.value.id,
     quantity: quantity.value,
   }
@@ -509,8 +534,6 @@ async function addToCart() {
 
   window.alert('Đã thêm vào giỏ hàng')
 }
-
-
 
 // auto refetch khi click related product (route param đổi)
 watch(
@@ -542,8 +565,8 @@ watch(
   align-items: flex-start;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #ebdbb2;
-  background: #f9f5d7; /* nhìn giống thẻ trắng/kem */
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
 }
 
 .highlight-img {
@@ -552,17 +575,18 @@ watch(
   border-radius: 10px;
   object-fit: cover;
   flex: 0 0 56px;
-  border: 1px solid #ebdbb2;
-  background: #fbf1c7;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
 }
 
 .highlight-title {
   font-weight: 800;
   margin-bottom: 4px;
+  color: #000000;
 }
 
 .highlight-desc {
-  color: #665c54;
+  color: #808080;
   line-height: 1.45;
 }
 
@@ -575,22 +599,23 @@ watch(
 .faq-item {
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #ebdbb2;
-  background: #f9f5d7;
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
 }
 
 .faq-q {
   font-weight: 800;
   margin-bottom: 6px;
+  color: #000000;
 }
 
 .faq-a {
-  color: #665c54;
+  color: #808080;
   line-height: 1.5;
 }
 
 .empty-text {
-  color: #7c6f64;
+  color: #808080;
   padding: 6px 0;
 }
 
@@ -600,14 +625,14 @@ watch(
   padding: 28px 16px 40px 16px;
   max-width: 1180px;
   margin: 0 auto;
-  background: #fbf1c7;
-  color: #3c3836;
+  background: #ffffff;
+  color: #000000;
 }
 
 .back {
   background: transparent;
-  border: 1px solid #ebdbb2;
-  color: #3c3836;
+  border: 1px solid #e0e0e0;
+  color: #000000;
   cursor: pointer;
   margin-bottom: 20px;
   font-size: 0.95rem;
@@ -620,8 +645,8 @@ watch(
 }
 
 .back:hover {
-  border-color: #d79921;
-  color: #d79921;
+  border-color: #000000;
+  background: #f5f5f5;
 }
 
 .loading,
@@ -639,10 +664,10 @@ watch(
   margin-top: 12px;
 
   padding: 24px;
-  background: #f9f5d7;
-  border: 1px solid #ebdbb2;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
   border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(29, 32, 33, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 
   align-items: start;
 }
@@ -690,7 +715,7 @@ watch(
 }
 
 .image-thumbnails img.active {
-  border-color: #111;
+  border-color: #000000;
 }
 
 .product-info {
@@ -702,12 +727,12 @@ watch(
 .product-info h1 {
   font-size: 2.1rem;
   margin: 0;
-  color: #3c3836;
+  color: #000000;
   letter-spacing: -0.01em;
 }
 
 .category {
-  color: #7c6f64;
+  color: #808080;
   font-size: 1rem;
   margin: -10px 0 0 0;
 }
@@ -721,20 +746,20 @@ watch(
 .price {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #3c3836;
+  color: #000000;
   margin: 0;
 }
 
 .old-price {
   font-size: 1.05rem;
-  color: #7c6f64;
+  color: #808080;
   text-decoration: line-through;
   margin: 0;
 }
 
 .discount-badge {
-  background: #d79921;
-  color: #1d2021;
+  background: #000000;
+  color: #ffffff;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -744,11 +769,11 @@ watch(
 .meta-row {
   display: flex;
   gap: 8px;
-  color: #3c3836;
+  color: #000000;
 }
 
 .meta-label {
-  color: #7c6f64;
+  color: #808080;
   font-weight: 600;
 }
 
@@ -757,7 +782,7 @@ watch(
 .description h3 {
   font-size: 1.05rem;
   margin: 0 0 10px 0;
-  color: #3c3836;
+  color: #000000;
 }
 
 .color-options {
@@ -771,27 +796,27 @@ watch(
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #fbf1c7;
+  background: #ffffff;
 }
 
 .color-option:hover {
-  border-color: #d79921;
+  border-color: #000000;
 }
 
 .color-option.active {
-  border-color: #d79921;
-  background: #f2e5bc;
+  border-color: #000000;
+  background: #f5f5f5;
 }
 
 .color-swatch {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 1px solid #d5c4a1;
+  border: 1px solid #e0e0e0;
 }
 
 .size-options {
@@ -802,23 +827,23 @@ watch(
 
 .size-option {
   padding: 10px 18px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
-  background: #fbf1c7;
+  background: #ffffff;
   cursor: pointer;
   font-size: 0.97rem;
   transition: all 0.2s ease;
-  color: #3c3836;
+  color: #000000;
 }
 
 .size-option:hover {
-  border-color: #d79921;
+  border-color: #000000;
 }
 
 .size-option.active {
-  border-color: #d79921;
-  background: #d79921;
-  color: #1d2021;
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
 }
 
 .quantity-controls {
@@ -830,10 +855,10 @@ watch(
 .qty-btn {
   width: 40px;
   height: 40px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
-  background: #fbf1c7;
-  color: #3c3836;
+  background: #ffffff;
+  color: #000000;
   font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
@@ -848,10 +873,10 @@ watch(
 .qty-input {
   width: 70px;
   height: 40px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
-  background: #fbf1c7;
-  color: #3c3836;
+  background: #ffffff;
+  color: #000000;
   text-align: center;
   font-size: 1rem;
   font-weight: 600;
@@ -859,34 +884,37 @@ watch(
 
 .description p {
   line-height: 1.6;
-  color: #3c3836;
+  color: #000000;
 }
 
 .add-to-cart-btn {
-  background: #d79921;
-  color: #1d2021;
-  border: 1px solid #d79921;
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
   padding: 14px 28px;
   border-radius: 999px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   align-self: flex-start;
-  box-shadow: 0 8px 18px rgba(29, 32, 33, 0.12);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
 .add-to-cart-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 26px rgba(29, 32, 33, 0.16);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.16);
+  background: #333333;
 }
 
 .detail-block {
   padding: 14px 16px;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 14px;
-  background: #fbf1c7;
-  box-shadow: 0 8px 18px rgba(29, 32, 33, 0.04);
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
 }
 
 .detail-block + .detail-block {
@@ -902,7 +930,7 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #3c3836;
+  color: #000000;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -920,13 +948,15 @@ watch(
   padding-left: 18px;
   display: grid;
   gap: 6px;
-  color: #3c3836;
+  color: #000000;
   line-height: 1.5;
 }
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: max-height 0.2s ease, opacity 0.2s ease;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.2s ease;
   overflow: hidden;
 }
 .slide-enter-from,
@@ -950,12 +980,12 @@ watch(
   margin: 0 0 16px 0;
   font-size: 1.35rem;
   font-weight: 700;
-  color: #3c3836;
+  color: #000000;
 }
 
 .related-loading {
   padding: 18px 0;
-  color: #7c6f64;
+  color: #808080;
 }
 
 .related-grid {
@@ -965,8 +995,8 @@ watch(
 }
 
 .related-card {
-  background: #f9f5d7;
-  border: 1px solid #ebdbb2;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
   border-radius: 14px;
   overflow: hidden;
 }
@@ -1001,7 +1031,7 @@ watch(
 .related-name {
   font-size: 0.95rem;
   line-height: 1.3;
-  color: #3c3836;
+  color: #000000;
   min-height: 2.4em;
 }
 
@@ -1013,11 +1043,11 @@ watch(
 
 .rp-new {
   font-weight: 700;
-  color: #3c3836;
+  color: #000000;
 }
 
 .rp-old {
-  color: #7c6f64;
+  color: #808080;
   text-decoration: line-through;
   font-size: 0.9rem;
 }
