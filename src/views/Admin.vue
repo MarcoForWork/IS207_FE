@@ -40,9 +40,7 @@
     <div class="main">
       <!-- TOPBAR -->
       <header class="topbar">
-        <button class="hamburger" @click="sidebarOpen = true" aria-label="Open sidebar">
-          ☰
-        </button>
+        <button class="hamburger" @click="sidebarOpen = true" aria-label="Open sidebar">☰</button>
 
         <div class="topbar-title">
           <h1 class="page-title">Dashboard</h1>
@@ -105,12 +103,12 @@ const router = useRouter()
 const sidebarOpen = ref(false)
 
 /* default tab */
-const activeTab = ref('analytics')  // NEW: Mặc định mở tab Analytics
+const activeTab = ref('analytics') // NEW: Mặc định mở tab Analytics
 
 /* map tab -> component */
 const componentMap = {
-  analytics: AnalyticsDashboard,        // NEW
-  customers: CustomersManagement,       // NEW
+  analytics: AnalyticsDashboard, // NEW
+  customers: CustomersManagement, // NEW
   categories: CategoryManagement,
   collections: CollectionManagement,
   products: ProductManagement,
@@ -170,16 +168,16 @@ function handleLogout() {
 .admin-layout {
   min-height: 100vh;
   display: flex;
-  background: #f4f6fb;
-  color: #1f2937;
+  background: #ffffff;
+  color: #000000;
   position: relative;
 }
 
 /* ====== SIDEBAR ====== */
 .sidebar {
   width: 260px;
-  background: #ffffff;
-  border-right: 1px solid #e6e8ef;
+  background: #000000;
+  border-right: 1px solid #000000;
   padding: 18px 14px;
   position: sticky;
   top: 0;
@@ -192,7 +190,7 @@ function handleLogout() {
   align-items: center;
   gap: 10px;
   padding: 10px 10px 14px;
-  border-bottom: 1px solid #eef0f6;
+  border-bottom: 1px solid #333333;
   margin-bottom: 12px;
   position: relative;
 }
@@ -201,8 +199,8 @@ function handleLogout() {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #111827;
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -212,6 +210,7 @@ function handleLogout() {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  color: #ffffff;
 }
 
 .brand-name {
@@ -221,7 +220,7 @@ function handleLogout() {
 
 .brand-sub {
   font-size: 12px;
-  color: #6b7280;
+  color: #e0e0e0;
 }
 
 .sidebar-close {
@@ -230,7 +229,8 @@ function handleLogout() {
   right: 8px;
   top: 8px;
   border: none;
-  background: #f3f4f6;
+  background: #333333;
+  color: #ffffff;
   border-radius: 10px;
   width: 34px;
   height: 34px;
@@ -255,28 +255,30 @@ function handleLogout() {
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  color: #374151;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+  color: #e0e0e0;
   font-weight: 600;
 }
 
 .nav-item:hover {
-  background: #f5f7ff;
-  border-color: #e6e8ef;
+  background: #333333;
+  border-color: #808080;
 }
 
 .nav-item.active {
-  background: #eef2ff;
-  border-color: #dbe2ff;
-  color: #1f3fff;
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
 }
 
 .nav-item.danger {
-  color: #b91c1c;
+  color: #e0e0e0;
 }
 .nav-item.danger:hover {
-  background: #fff1f2;
-  border-color: #fecdd3;
+  background: #333333;
+  border-color: #808080;
 }
 
 .nav-icon {
@@ -291,8 +293,8 @@ function handleLogout() {
 }
 
 .nav-badge {
-  background: #ef4444;
-  color: white;
+  background: #ffffff;
+  color: #000000;
   font-size: 12px;
   font-weight: 700;
   padding: 2px 8px;
@@ -301,7 +303,7 @@ function handleLogout() {
 
 .nav-divider {
   height: 1px;
-  background: #eef0f6;
+  background: #333333;
   margin: 10px 6px;
 }
 
@@ -317,7 +319,7 @@ function handleLogout() {
 .topbar {
   height: 74px;
   background: #ffffff;
-  border-bottom: 1px solid #e6e8ef;
+  border-bottom: 2px solid #000000;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -327,8 +329,9 @@ function handleLogout() {
 
 .hamburger {
   display: none;
-  border: none;
-  background: #f3f4f6;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
   border-radius: 12px;
   width: 42px;
   height: 42px;
@@ -340,6 +343,7 @@ function handleLogout() {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  color: #000000;
 }
 
 .page-title {
@@ -351,7 +355,7 @@ function handleLogout() {
 
 .page-subtitle {
   font-size: 13px;
-  color: #6b7280;
+  color: #808080;
 }
 
 .topbar-right {
@@ -361,8 +365,9 @@ function handleLogout() {
 }
 
 .icon-btn {
-  border: 1px solid #e6e8ef;
+  border: 1px solid #000000;
   background: #ffffff;
+  color: #000000;
   border-radius: 12px;
   width: 42px;
   height: 42px;
@@ -370,7 +375,8 @@ function handleLogout() {
 }
 
 .icon-btn:hover {
-  background: #f3f4f6;
+  background: #000000;
+  color: #ffffff;
 }
 
 .profile {
@@ -384,6 +390,7 @@ function handleLogout() {
   display: flex;
   flex-direction: column;
   line-height: 1.1;
+  color: #000000;
 }
 
 .profile-name {
@@ -393,15 +400,15 @@ function handleLogout() {
 
 .profile-role {
   font-size: 12px;
-  color: #6b7280;
+  color: #808080;
 }
 
 .avatar {
   width: 42px;
   height: 42px;
   border-radius: 14px;
-  background: #111827;
-  color: white;
+  background: #000000;
+  color: #ffffff;
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -410,19 +417,20 @@ function handleLogout() {
 /* ====== CONTENT ====== */
 .content {
   padding: 18px;
+  background: #f5f5f5;
 }
 
 .content-card {
   background: #ffffff;
-  border: 1px solid #e6e8ef;
+  border: 2px solid #000000;
   border-radius: 16px;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .content-card-header {
   padding: 18px 18px 10px;
-  border-bottom: 1px solid #f0f2f7;
+  border-bottom: 2px solid #000000;
 }
 
 .content-title {
@@ -440,7 +448,7 @@ function handleLogout() {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.35);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 20;
 }
 

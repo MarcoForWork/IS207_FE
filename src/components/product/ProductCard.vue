@@ -56,7 +56,7 @@ function formatPrice(p) {
   right: 12px;
   top: 12px;
   background: transparent;
-  color: #d32f2f;
+  color: #000000;
   border-radius: 0;
   padding: 4px 0;
   font-size: 0.875rem;
@@ -101,25 +101,25 @@ function formatPrice(p) {
 }
 .title {
   font-size: 0.95rem;
-  color: #111;
+  color: #000000;
   font-weight: 500;
   margin: 0 0 2px 0;
   line-height: 1.5;
 }
 .category {
-  color: #757575;
+  color: #808080;
   font-size: 0.9rem;
   margin: 0;
   line-height: 1.5;
 }
 .colors {
-  color: #757575;
+  color: #808080;
   font-size: 0.9rem;
   margin: 0 0 10px 0;
   line-height: 1.5;
 }
 .price {
-  color: #111;
+  color: #000000;
   font-weight: 500;
   font-size: 0.95rem;
   margin: 0;

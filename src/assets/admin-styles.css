@@ -1,21 +1,21 @@
-/* Colors */
+/* Colors - Black & White Theme */
 :root {
-  --gruvbox-bg0: #fbf1c7;
-  --gruvbox-bg1: #f2e5bc;
-  --gruvbox-bg2: #d5c4a1;
-  --gruvbox-bg3: #bdae93;
-  --gruvbox-fg: #282828;
-  --gruvbox-fg2: #3c3836;
-  --gruvbox-fg3: #504945;
-  --gruvbox-gray: #665c54;
-  --gruvbox-red: #cc241d;
-  --gruvbox-green: #689d6a;
-  --gruvbox-yellow: #d79921;
-  --gruvbox-blue: #458588;
-  --gruvbox-purple: #b16286;
-  --gruvbox-aqua: #689d6a;
-  --gruvbox-orange: #d65d0e;
-  --gruvbox-bright-green: #98971a;
+  --gruvbox-bg0: #ffffff;
+  --gruvbox-bg1: #f5f5f5;
+  --gruvbox-bg2: #e0e0e0;
+  --gruvbox-bg3: #cccccc;
+  --gruvbox-fg: #000000;
+  --gruvbox-fg2: #000000;
+  --gruvbox-fg3: #333333;
+  --gruvbox-gray: #808080;
+  --gruvbox-red: #000000;
+  --gruvbox-green: #000000;
+  --gruvbox-yellow: #333333;
+  --gruvbox-blue: #000000;
+  --gruvbox-purple: #000000;
+  --gruvbox-aqua: #333333;
+  --gruvbox-orange: #000000;
+  --gruvbox-bright-green: #000000;
 }
 
 /* Base Styles */
@@ -28,19 +28,19 @@
 .product-faq-management,
 .product-highlight-management,
 .order-management {
-  color: #282828 !important;
+  color: #000000 !important;
 }
 
 /* Common Styles */
 h2 {
   margin-bottom: 30px;
-  color: #282828 !important;
+  color: #000000 !important;
   font-size: 28px;
 }
 
 h3 {
   margin-bottom: 20px;
-  color: #3c3836 !important;
+  color: #000000 !important;
   font-size: 20px;
 }
 
@@ -67,7 +67,7 @@ h3 {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #3c3836 !important;
+  color: #000000 !important;
 }
 
 .form-group input,
@@ -79,7 +79,7 @@ h3 {
   border-radius: 4px;
   font-size: 14px;
   background: white;
-  color: #282828 !important;
+  color: #000000 !important;
   transition: border-color 0.3s ease;
 }
 
@@ -117,19 +117,19 @@ h3 {
 }
 
 .btn-primary {
-  background: #d65d0e;
+  background: #000000;
   color: white;
   padding: 14px 32px;
   font-size: 16px;
   font-weight: 700;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  border: 2px solid #d65d0e;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #000000;
 }
 
 .btn-primary:hover {
-  background: #af3a03;
-  border-color: #af3a03;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  background: #333333;
+  border-color: #333333;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
   transform: translateY(-1px);
 }
 
@@ -151,7 +151,7 @@ h3 {
 .empty {
   text-align: center;
   padding: 40px;
-  color: #504945 !important;
+  color: #808080 !important;
 }
 
 /* Data Table */
@@ -171,7 +171,7 @@ h3 {
 .data-table th {
   background: var(--gruvbox-bg1);
   font-weight: 600;
-  color: #3c3836 !important;
+  color: #000000 !important;
 }
 
 .data-table tr:hover {
@@ -179,7 +179,7 @@ h3 {
 }
 
 .data-table td {
-  color: #282828 !important;
+  color: #000000 !important;
 }
 
 /* Status Badges */
@@ -191,38 +191,39 @@ h3 {
 }
 
 .status-badge.active {
-  background: #d5f4dd;
-  color: #2d5c3b;
+  background: #000000;
+  color: #ffffff;
 }
 
 .status-badge.inactive {
-  background: #ffd7d7;
-  color: #8b3a3a;
+  background: #e0e0e0;
+  color: #000000;
 }
 
 .status-badge.pending {
-  background: #fff4d7;
-  color: #7a5f1a;
+  background: #f5f5f5;
+  color: #000000;
+  border: 1px solid #000000;
 }
 
 .status-badge.processing {
-  background: #d7e8f4;
-  color: #2b4f66;
+  background: #808080;
+  color: #ffffff;
 }
 
 .status-badge.shipped {
-  background: #d7f4f4;
-  color: #2b6666;
+  background: #333333;
+  color: #ffffff;
 }
 
 .status-badge.delivered {
-  background: #d5f4dd;
-  color: #2d5c3b;
+  background: #000000;
+  color: #ffffff;
 }
 
 .status-badge.cancelled {
-  background: #ffd7d7;
-  color: #8b3a3a;
+  background: #cccccc;
+  color: #000000;
 }
 
 /* Action Buttons */
@@ -244,30 +245,30 @@ h3 {
 }
 
 .btn-edit {
-  background: var(--gruvbox-yellow);
+  background: #333333;
   color: white;
 }
 
 .btn-edit:hover {
-  background: var(--gruvbox-orange);
+  background: #000000;
 }
 
 .btn-toggle {
-  background: var(--gruvbox-blue);
+  background: #000000;
   color: white;
 }
 
 .btn-toggle:hover {
-  background: var(--gruvbox-aqua);
+  background: #333333;
 }
 
 .btn-delete {
-  background: var(--gruvbox-red);
+  background: #000000;
   color: white;
 }
 
 .btn-delete:hover {
-  background: #cc241d;
+  background: #808080;
 }
 
 /* Select Elements */
@@ -278,7 +279,7 @@ h3 {
   font-size: 12px;
   cursor: pointer;
   background: white;
-  color: #282828 !important;
+  color: #000000 !important;
   transition: border-color 0.3s ease;
 }
 
@@ -313,17 +314,17 @@ h3 {
 .highlight-content strong {
   display: block;
   margin-bottom: 10px;
-  color: #282828 !important;
+  color: #000000 !important;
 }
 
 .faq-content p {
   margin: 10px 0;
-  color: #3c3836 !important;
+  color: #000000 !important;
 }
 
 .faq-content small,
 .highlight-content small {
-  color: #665c54 !important;
+  color: #808080 !important;
 }
 
 .highlight-content {
@@ -341,7 +342,7 @@ h3 {
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  color: #282828 !important;
+  color: #000000 !important;
 }
 
 .faq-actions,

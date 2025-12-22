@@ -66,7 +66,7 @@ export default {
   line-height: 1.3;
   margin-bottom: 30px;
 
-  background: linear-gradient(90deg, #ffc800, #ff7f00, #e73d4a, #0090ff, #00c0b9);
+  background: linear-gradient(90deg, #000000, #333333, #808080, #000000, #333333);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -76,15 +76,15 @@ export default {
   pointer-events: auto;
   padding: 12px 35px;
   font-weight: bold;
-  background-color: #fbf1c7;
-  color: #3c3836;
-  border: 2px solid #3c3836;
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
   text-decoration: none;
   transition: all 0.3s;
 }
 
 .cta-button:hover {
-  background-color: #ebdbb2;
+  background-color: #333333;
   transform: translateY(-2px);
 }
 </style>

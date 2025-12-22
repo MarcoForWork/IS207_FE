@@ -356,12 +356,7 @@ async function fetchFirstImageUrl(productId) {
 
     // Nếu backend trả full url: http://localhost:8000/storage/...
     return (
-      chosen.image_url ||
-      chosen.url ||
-      chosen.image_path ||
-      chosen.path ||
-      chosen.image ||
-      null
+      chosen.image_url || chosen.url || chosen.image_path || chosen.path || chosen.image || null
     )
   } catch (e) {
     console.error('fetchFirstImageUrl error:', e)
@@ -378,7 +373,7 @@ async function fetchProducts() {
     })
 
     const data = await res.json().catch(() => null)
-    const list = Array.isArray(data) ? data : data?.data ?? []
+    const list = Array.isArray(data) ? data : (data?.data ?? [])
 
     // Lấy ảnh cho từng product (song song)
     const mapped = await Promise.all(
@@ -450,8 +445,8 @@ onUnmounted(() => {
   width: 94vw;
   max-width: 1920px;
   margin: 0 auto;
-  background: #fbf1c7;
-  color: #3c3836;
+  background: #ffffff;
+  color: #000000;
 }
 .products-hero {
   display: flex;
@@ -462,7 +457,7 @@ onUnmounted(() => {
 }
 .products-hero h1 {
   margin: 0;
-  color: #3c3836;
+  color: #000000;
 }
 .products-grid {
   display: block;
@@ -492,7 +487,7 @@ onUnmounted(() => {
   gap: 0;
 }
 .filter-section {
-  border-bottom: 1px solid #ebdbb2;
+  border-bottom: 1px solid #e0e0e0;
 }
 .filter-header {
   width: 100%;
@@ -504,7 +499,7 @@ onUnmounted(() => {
   border: none;
   font-size: 1rem;
   font-weight: 600;
-  color: #3c3836;
+  color: #000000;
   cursor: pointer;
   text-align: left;
 }
@@ -539,37 +534,37 @@ onUnmounted(() => {
   padding: 8px 0 20px 0;
 }
 .pill {
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 999px;
   padding: 10px 14px;
-  background: #f9f5d7;
+  background: #f5f5f5;
   font-size: 0.95rem;
-  color: #3c3836;
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
 }
 .pill.selected {
-  background: #d79921;
-  color: #1d2021;
-  border-color: #d79921;
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 .size-button {
   padding: 10px;
   text-align: center;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #f9f5d7;
-  color: #3c3836;
+  background: #f5f5f5;
+  color: #000000;
 }
 .size-button.selected {
-  background: #d79921;
-  color: #1d2021;
-  border-color: #d65d0e;
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
 }
 .color-item {
   display: flex;
@@ -580,20 +575,20 @@ onUnmounted(() => {
   transition: transform 0.2s ease;
 }
 .color-item.selected .color-circle {
-  box-shadow: 0 0 0 3px #d79921;
+  box-shadow: 0 0 0 3px #000000;
 }
 .color-circle {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid #ebdbb2;
+  border: 1px solid #e0e0e0;
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
-  background: #fbf1c7;
+  background: #ffffff;
 }
 .color-circle.is-white {
-  border: 2px solid #d5c4a1;
+  border: 2px solid #808080;
 }
 .color-circle.is-multi {
   background: conic-gradient(
@@ -610,13 +605,16 @@ onUnmounted(() => {
 }
 .color-name {
   font-size: 0.8125rem;
-  color: #3c3836;
+  color: #000000;
   text-align: center;
   line-height: 1.2;
 }
 .slide-enter-active,
 .slide-leave-active {
-  transition: max-height 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    max-height 0.25s ease,
+    opacity 0.25s ease,
+    transform 0.25s ease;
   overflow: hidden;
 }
 .slide-enter-from,
@@ -635,7 +633,7 @@ onUnmounted(() => {
   flex: 1;
 }
 .products-hero .count-inline {
-  color: #504945;
+  color: #808080;
   font-weight: 500;
   margin-left: 8px;
 }
@@ -657,19 +655,19 @@ onUnmounted(() => {
   border: 1px solid transparent;
   border-radius: 24px;
   font-size: 0.95rem;
-  color: #3c3836;
+  color: #000000;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .sort-btn:hover {
-  border-color: #d79921;
+  border-color: #000000;
 }
 .sort-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: #f9f5d7;
-  border: 1px solid #ebdbb2;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(29, 32, 33, 0.15);
   min-width: 200px;
@@ -681,13 +679,13 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-size: 0.95rem;
-  color: #3c3836;
+  color: #000000;
 }
 .sort-option:hover {
-  background-color: #f2e5bc;
+  background-color: #f5f5f5;
 }
 .sort-option.active {
-  background-color: #ebdbb2;
+  background-color: #e0e0e0;
   font-weight: 600;
 }
 .sort-option.active::before {

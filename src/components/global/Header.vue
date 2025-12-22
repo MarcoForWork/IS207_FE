@@ -284,8 +284,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.12rem 1rem;
-  background-color: #32302f;
-  border-bottom: 1px solid #504945;
+  background-color: #000000;
+  border-bottom: 1px solid #333333;
   height: 32px;
 }
 
@@ -309,7 +309,7 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #ebdbb2;
+  color: #ffffff;
   text-decoration: none;
   padding: 0.4rem;
   border-radius: 4px;
@@ -320,8 +320,8 @@ export default {
 }
 
 .notification-button:hover {
-  color: #8ec07c;
-  background-color: rgba(142, 192, 124, 0.1);
+  color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .notification-icon {
@@ -332,8 +332,8 @@ export default {
   position: absolute;
   top: 2px;
   right: 2px;
-  background-color: #fb4934;
-  color: #fff;
+  background-color: #ffffff;
+  color: #000000;
   font-size: 0.65rem;
   font-weight: bold;
   padding: 0.1rem 0.35rem;
@@ -347,8 +347,8 @@ export default {
   position: absolute;
   top: calc(100% + 8px);
   right: -60px;
-  background-color: #282828;
-  border: 1px solid #504945;
+  background-color: #333333;
+  border: 1px solid #808080;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   width: 360px;
@@ -395,21 +395,21 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #3c3836;
-  background-color: #32302f;
+  border-bottom: 1px solid #808080;
+  background-color: #000000;
 }
 
 .notifications-header h3 {
   margin: 0;
   font-size: 1rem;
-  color: #ebdbb2;
+  color: #ffffff;
   font-weight: 600;
 }
 
 .mark-read-btn {
   background: none;
   border: none;
-  color: #8ec07c;
+  color: #e0e0e0;
   font-size: 0.8rem;
   cursor: pointer;
   padding: 0.25rem 0.5rem;
@@ -431,18 +431,18 @@ export default {
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
-  border-bottom: 1px solid #3c3836;
+  border-bottom: 1px solid #808080;
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
 }
 
 .notification-item:hover {
-  background-color: #32302f;
+  background-color: #000000;
 }
 
 .notification-item.unread {
-  background-color: rgba(142, 192, 124, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .notification-icon-wrapper {
@@ -452,12 +452,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #3c3836;
+  background-color: #808080;
   border-radius: 50%;
 }
 
 .notification-icon-wrapper svg {
-  stroke: #8ec07c;
+  stroke: #ffffff;
 }
 
 .notification-content {
@@ -469,19 +469,19 @@ export default {
   margin: 0 0 0.25rem 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #ebdbb2;
+  color: #ffffff;
 }
 
 .notification-message {
   margin: 0 0 0.35rem 0;
   font-size: 0.85rem;
-  color: #bdae93;
+  color: #e0e0e0;
   line-height: 1.4;
 }
 
 .notification-time {
   font-size: 0.75rem;
-  color: #928374;
+  color: #808080;
 }
 
 .unread-dot {
@@ -491,7 +491,7 @@ export default {
   transform: translateY(-50%);
   width: 8px;
   height: 8px;
-  background-color: #8ec07c;
+  background-color: #ffffff;
   border-radius: 50%;
 }
 
@@ -505,13 +505,13 @@ export default {
 }
 
 .notifications-empty svg {
-  stroke: #504945;
+  stroke: #808080;
   margin-bottom: 1rem;
   opacity: 0.5;
 }
 
 .notifications-empty p {
-  color: #928374;
+  color: #808080;
   font-size: 0.95rem;
   margin: 0;
 }
@@ -532,7 +532,7 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #ebdbb2;
+  color: #ffffff;
   text-decoration: none;
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
@@ -542,15 +542,15 @@ export default {
 }
 
 .account-button:hover {
-  color: #8ec07c;
+  color: #e0e0e0;
 }
 
 .dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background-color: #282828;
-  border: 1px solid #504945;
+  background-color: #333333;
+  border: 1px solid #808080;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   min-width: 160px;
@@ -572,7 +572,7 @@ export default {
   align-items: center;
   gap: 0.6rem;
   padding: 0.7rem 1rem;
-  color: #ebdbb2;
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.9rem;
   border: none;
@@ -581,7 +581,7 @@ export default {
   text-align: left;
   cursor: pointer;
   transition: all 0.15s ease;
-  border-bottom: 1px solid #3c3836;
+  border-bottom: 1px solid #808080;
 }
 
 .dropdown-item:last-child {
@@ -589,8 +589,8 @@ export default {
 }
 
 .dropdown-item:hover {
-  background-color: #3c3836;
-  color: #8ec07c;
+  background-color: #000000;
+  color: #e0e0e0;
 }
 
 .dropdown-item svg {
@@ -599,7 +599,7 @@ export default {
 }
 
 .logout-item:hover {
-  color: #fb4934;
+  color: #808080;
 }
 
 .account-label {
@@ -607,11 +607,11 @@ export default {
 }
 
 .account-svg {
-  stroke: #ebdbb2;
+  stroke: #ffffff;
 }
 
 .account-button:hover .account-svg {
-  stroke: #8ec07c;
+  stroke: #e0e0e0;
 }
 
 @media (max-width: 768px) {
