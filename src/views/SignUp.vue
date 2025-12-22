@@ -77,8 +77,6 @@
         </div>
       </div>
     </main>
-
-    <Footer />
   </div>
 </template>
 
@@ -87,7 +85,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Header from '@/components/global/Header.vue'
 import Navbar from '@/components/global/Navbar.vue'
-import Footer from '@/components/global/Footer.vue'
 import { buildUrl, API_ENDPOINTS, getHeaders } from '@/config/api'
 
 const router = useRouter()
