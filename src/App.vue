@@ -23,17 +23,17 @@ body,
   padding: 0;
 }
 
-/* Gruvbox Light Color Palette (Soft variant) */
+/* Black & White Theme */
 :root {
   /* Backgrounds */
-  --bg-light: #fbf1c7; /* background soft */
-  --fg-light: #3c3836; /* foreground */
+  --bg-light: #ffffff; /* white background */
+  --fg-light: #000000; /* black foreground */
 
   /* Primary Colors (Accents) */
-  --yellow: #d79921; /* Gruvbox yellow (for button/highlight) */
-  --green: #98971a; /* Gruvbox green (primary action) */
-  --dark-bg: #ebdbb2; /* base background (used for form container) */
-  --gray: #a89984; /* Gruvbox gray (for input borders/placeholders) */
+  --yellow: #000000; /* black (for button/highlight) */
+  --green: #000000; /* black (primary action) */
+  --dark-bg: #f5f5f5; /* light gray background (used for form container) */
+  --gray: #e0e0e0; /* light gray (for input borders/placeholders) */
 }
 
 /* Apply Gruvbox Light background and text color to the entire body/container */

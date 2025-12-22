@@ -2,7 +2,7 @@
   <nav class="navbar">
     <!-- Left: Logo -->
     <div class="navbar-brand">
-      <router-link to="/" class="logo">Lmaohihi</router-link>
+      <router-link to="/" class="logo">IS207</router-link>
     </div>
 
     <!-- Center: Menu Items -->
@@ -214,13 +214,13 @@ export default {
 
 <style scoped>
 .navbar {
-  background-color: #32302f;
+  background-color: #000000;
   padding: 0.35rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #504945;
+  border-bottom: 1px solid #333333;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -235,7 +235,7 @@ export default {
 }
 
 .logo {
-  color: #b8bb26;
+  color: #ffffff;
   font-size: 1.3rem;
   text-decoration: none;
   transition: color 0.2s;
@@ -244,7 +244,7 @@ export default {
 }
 
 .logo:hover {
-  color: #8ec07c;
+  color: #e0e0e0;
 }
 
 /* Center Menu */
@@ -274,7 +274,7 @@ export default {
 .nav-link {
   background: none;
   border: none;
-  color: #ebdbb2;
+  color: #ffffff;
   font-size: 0.85rem;
   font-weight: 400;
   cursor: pointer;
@@ -289,7 +289,7 @@ export default {
 }
 
 .nav-link:hover {
-  color: #8ec07c;
+  color: #e0e0e0;
 }
 
 .dropdown-icon {
@@ -302,7 +302,7 @@ export default {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background: #2b2b2b;
+  background: #333333;
   border: none;
   border-radius: 0;
   min-width: 220px;
@@ -328,7 +328,7 @@ export default {
 .dropdown-item {
   display: block;
   padding: 0.75rem 1rem;
-  color: #d4af37;
+  color: #ffffff;
   text-decoration: none;
   transition: all 0.2s ease;
   font-size: 0.85rem;
@@ -339,15 +339,15 @@ export default {
 }
 
 .dropdown-item:hover {
-  background: rgba(142, 192, 124, 0.2);
-  color: #8ec07c;
-  border-left-color: #8ec07c;
+  background: rgba(255, 255, 255, 0.15);
+  color: #e0e0e0;
+  border-left-color: #ffffff;
   padding-left: 1.2rem;
 }
 
 .dropdown-divider {
   border: none;
-  border-top: 1px solid #504945;
+  border-top: 1px solid #808080;
   margin: 0.5rem 0;
 }
 
@@ -362,7 +362,7 @@ export default {
 .icon-btn {
   background: none;
   border: none;
-  color: #ebdbb2;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 400;
   cursor: pointer;
@@ -377,7 +377,7 @@ export default {
 }
 
 .icon-btn:hover {
-  color: #8ec07c;
+  color: #e0e0e0;
 }
 
 .mobile-search-toggle {
@@ -392,8 +392,8 @@ export default {
   position: absolute;
   top: -6px;
   right: -6px;
-  background: #fb4934;
-  color: #282828;
+  background: #000000;
+  color: #ffffff;
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -410,8 +410,8 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  background: #3c3836;
-  border: 1px solid #504945;
+  background: #333333;
+  border: 1px solid #808080;
   padding: 0.15rem 0.35rem;
   border-radius: 18px;
 }
@@ -420,7 +420,7 @@ export default {
   width: 120px;
   background: transparent;
   border: none;
-  color: #ebdbb2;
+  color: #ffffff;
   padding: 0.15rem 0.2rem;
   font-size: 0.9rem;
   outline: none;
@@ -428,7 +428,7 @@ export default {
 }
 
 .search-desktop input::placeholder {
-  color: #a89984;
+  color: #e0e0e0;
 }
 
 .search-desktop input:focus {
@@ -438,7 +438,7 @@ export default {
 .search-submit {
   background: none;
   border: none;
-  color: #ebdbb2;
+  color: #ffffff;
   padding: 0.15rem;
   display: inline-flex;
   align-items: center;
@@ -447,7 +447,7 @@ export default {
 }
 
 .search-submit:hover {
-  color: #8ec07c;
+  color: #e0e0e0;
 }
 
 /* Search Bar Mobile */
@@ -456,7 +456,7 @@ export default {
   display: none;
   gap: 0.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #504945;
+  border-top: 1px solid #808080;
 }
 
 .search-bar-mobile.active {
@@ -466,21 +466,21 @@ export default {
 .search-bar-mobile input {
   flex: 1;
   padding: 0.75rem;
-  border: 1px solid #504945;
-  background: #3c3836;
-  color: #ebdbb2;
+  border: 1px solid #808080;
+  background: #333333;
+  color: #ffffff;
   border-radius: 2px;
   font-size: 0.9rem;
 }
 
 .search-bar-mobile input::placeholder {
-  color: #a89984;
+  color: #e0e0e0;
 }
 
 .search-bar-mobile button {
   padding: 0.75rem 1.5rem;
-  background: #b8bb26;
-  color: #282828;
+  background: #000000;
+  color: #ffffff;
   border: none;
   border-radius: 2px;
   cursor: pointer;
@@ -489,8 +489,8 @@ export default {
 }
 
 .search-bar-mobile button:hover {
-  background: #8ec07c;
-  color: #282828;
+  background: #333333;
+  color: #ffffff;
 }
 
 /* Responsive */

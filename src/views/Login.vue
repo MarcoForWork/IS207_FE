@@ -141,10 +141,10 @@ function goToSignup() {
 <style scoped>
 .auth-page {
   background:
-    radial-gradient(circle at 20% 20%, rgba(239, 212, 146, 0.35) 0%, transparent 35%),
-    radial-gradient(circle at 80% 10%, rgba(198, 160, 128, 0.25) 0%, transparent 30%),
-    radial-gradient(circle at 50% 80%, rgba(104, 157, 106, 0.18) 0%, transparent 32%),
-    linear-gradient(180deg, #fbf1c7 0%, #f4e8d0 100%);
+    radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.05) 0%, transparent 35%),
+    radial-gradient(circle at 80% 10%, rgba(0, 0, 0, 0.03) 0%, transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.02) 0%, transparent 32%),
+    linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
   min-height: calc(100vh - 140px);
   display: flex;
   align-items: center;
@@ -158,23 +158,23 @@ function goToSignup() {
 }
 
 .auth-card {
-  background: #fdfbf4;
+  background: #ffffff;
   border-radius: 14px;
-  box-shadow: 0 16px 48px rgba(60, 56, 54, 0.14);
-  border: 1px solid #d5c4a1;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
   padding: 2.5rem 2.25rem;
 }
 
 .card-header h1 {
   margin: 0 0 0.5rem;
   font-size: 1.75rem;
-  color: #3c3836;
+  color: #000000;
   letter-spacing: -0.01em;
 }
 
 .card-header p {
   margin: 0;
-  color: #665c54;
+  color: #808080;
   line-height: 1.6;
   font-size: 0.95rem;
 }
@@ -192,7 +192,7 @@ function goToSignup() {
   width: 64px;
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #d79921 0%, #b47c1a 100%);
+  background: linear-gradient(90deg, #000000 0%, #333333 100%);
 }
 
 .auth-form {
@@ -210,7 +210,7 @@ function goToSignup() {
 
 .form-group label {
   font-weight: 600;
-  color: #3c3836;
+  color: #000000;
   font-size: 0.95rem;
 }
 
@@ -218,9 +218,9 @@ function goToSignup() {
   width: 100%;
   padding: 0.9rem 1rem;
   border-radius: 10px;
-  border: 1px solid #d5c4a1;
-  background: #f9f5d7;
-  color: #3c3836;
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  color: #000000;
   font-size: 0.95rem;
   transition:
     border-color 0.2s,
@@ -230,9 +230,9 @@ function goToSignup() {
 
 .form-group input:focus {
   outline: none;
-  border-color: #d79921;
-  box-shadow: 0 0 0 3px rgba(215, 153, 33, 0.15);
-  background: #fef8ed;
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
 }
 
 .auth-button {
@@ -240,7 +240,7 @@ function goToSignup() {
   padding: 0.95rem;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #d79921 0%, #b47c1a 100%);
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
   color: white;
   font-weight: 700;
   font-size: 1rem;
@@ -253,7 +253,7 @@ function goToSignup() {
 
 .auth-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(215, 153, 33, 0.35);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .auth-button:disabled {
@@ -262,9 +262,9 @@ function goToSignup() {
 }
 
 .form-error {
-  color: #cc241d;
-  background: #fff2f0;
-  border: 1px solid #f5c2c7;
+  color: #000000;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
   border-radius: 10px;
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
@@ -275,14 +275,14 @@ function goToSignup() {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #665c54;
+  color: #808080;
   font-size: 0.95rem;
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #d79921;
+  color: #000000;
   font-weight: 700;
   cursor: pointer;
   padding: 0;
@@ -291,7 +291,7 @@ function goToSignup() {
 }
 
 .link-button:hover {
-  color: #b47c1a;
+  color: #333333;
 }
 
 @media (max-width: 540px) {

@@ -93,15 +93,15 @@ export default {
 
 .main-footer {
   width: 100%;
-  background-color: #32302f;
-  color: #ebdbb2;
+  background-color: #000000;
+  color: #ffffff;
   font-family: Arial, sans-serif;
 }
 
 /* ===== POLICY BAR (CAROUSEL) ===== */
 .policy-bar {
   background-color: #000000;
-  color: #fbf1c7;
+  color: #ffffff;
   overflow: hidden; /* QUAN TRỌNG */
   white-space: nowrap;
   padding: 12px 0;
@@ -127,7 +127,7 @@ export default {
 }
 
 .policy-separator {
-  color: #a89984;
+  color: #808080;
 }
 
 /* Hover dừng (pro) */
@@ -150,7 +150,7 @@ export default {
   padding: 15px 20px;
   text-align: center;
   font-size: 0.75em;
-  border-top: 1px solid #45403e;
+  border-top: 1px solid #333333;
 }
 
 /* ===== RESPONSIVE ===== */
